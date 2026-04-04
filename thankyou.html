@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Thank You — AgentFlowOS</title>
+<link rel="icon" href="https://assets.cdn.filesafe.space/aalZz3JfkmBWlXlpqvSa/media/69d1086b849c507b529d3916.png" type="image/png">
+<!--
+  Booking CTA shows ONLY if:
+  • URL has ?book=1 (manual / workflow link), OR
+  • sessionStorage afos_bundle_purchased = first upsell page loaded with ?bundle=1 (Ultimate — Stripe $1,397 redirect: https://agentflowos.ai/branding?bundle=1 )
+  Growth Kit + upsell-only buyers do not see booking (self-serve + sub-accounts).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+#afos-funnel,#afos-funnel *,#afos-funnel *::before,#afos-funnel *::after{box-sizing:border-box;margin:0;padding:0;}
+#afos-funnel{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:17px;line-height:1.65;color:#fff;background:linear-gradient(160deg,#0f172a 0%,#1e293b 100%);min-height:100vh;padding:48px 20px;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;}
+#afos-funnel .card{max-width:520px;text-align:center;padding:40px 32px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 60px rgba(0,0,0,.35);}
+#afos-funnel .logo{display:block;height:40px;width:auto;margin:0 auto 24px;object-fit:contain;}
+#afos-funnel h1{font-family:'Bricolage Grotesque',sans-serif;font-size:1.75rem;font-weight:800;letter-spacing:-.02em;margin-bottom:14px;}
+#afos-funnel p{color:rgba(255,255,255,.78);line-height:1.7;margin-bottom:12px;}
+#afos-funnel .btn-book{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;padding:16px 28px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;font-weight:700;text-decoration:none;border-radius:12px;font-size:1.02rem;box-shadow:0 8px 28px rgba(249,115,22,.35);transition:transform .12s,box-shadow .12s;}
+#afos-funnel .btn-book:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(249,115,22,.45);}
+#afos-funnel .fine{font-size:.84rem;color:rgba(255,255,255,.45);margin-top:20px;line-height:1.55;}
+#afos-funnel .fine a{color:rgba(255,255,255,.65);text-decoration:underline;}
+#afos-funnel [hidden]{display:none!important;}
+</style>
+</head>
+<body>
+<div id="afos-funnel">
+  <div class="card">
+    <img src="https://assets.cdn.filesafe.space/aalZz3JfkmBWlXlpqvSa/media/69d0fe47849c507b529c66fc.png" alt="AgentFlowOS" class="logo" width="180" height="40" onerror="this.style.display='none'">
+    <h1>You’re in.</h1>
+    <p id="afos-msg-kit">Check your email for delivery details and your <strong>client intake</strong> link. Import the snapshot into your GHL sub-account — we’re here if you get stuck.</p>
+    <div id="afos-book-block" hidden>
+      <p style="margin-top:16px;">You purchased the <strong>Ultimate bundle</strong> — optional welcome call to walk through what you received:</p>
+      <a class="btn-book" href="https://book.agentflowos.ai/widget/bookings/bookwithusgym-dd37947d-fe0f-46a4-b8f2-a62219276158-b473d2a3-ea5d-4467-b918-6050ecb31703-f9585afc-5bf2-489a-b9d6-117454e496c8" target="_blank" rel="noopener noreferrer">📅 Book your call — GHL calendar</a>
+    </div>
+    <p class="fine">No email yet? Check spam. <a href="mailto:hello@agentflowos.com">hello@agentflowos.com</a></p>
+  </div>
+</div>
+<script>
+(function(){
+  var book=document.getElementById('afos-book-block');
+  var kit=document.getElementById('afos-msg-kit');
+  if(!book)return;
+  var show=false;
+  try{
+    if(new URLSearchParams(location.search).get('book')==='1')show=true;
+    if(sessionStorage.getItem('afos_bundle_purchased')==='1')show=true;
+  }catch(e){}
+  if(show){
+    book.removeAttribute('hidden');
+    if(kit)kit.innerHTML='Check your email for delivery and your <strong>client intake</strong> link. Optional: schedule your welcome call below.';
+  }
+})();
+</script>
+</body>
+</html>

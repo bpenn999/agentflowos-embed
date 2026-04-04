@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<!--
+  STRIPE + GHL FUNNEL FLOW (no GHL order form on this page)
+
+  Published step 1 (this page): https://agentflowos.ai/mgk
+  Step 2 — Branding $197: https://agentflowos.ai/branding
+  Step 3 — Guide $397: https://agentflowos.ai/guide (paste funnel-03-branding.html here — DFY step removed)
+  Step 4 — Thank you: https://agentflowos.ai/thankyou — booking CTA only for Ultimate (?bundle=1) or ?book=1
+  Ultimate Stripe “after payment”: https://agentflowos.ai/branding?bundle=1
+
+  ORDER: $697 → $197 → $397 → thank you. Ultimate $1,397 on this page only.
+
+  Stripe “after payment”:
+    $697 → https://agentflowos.ai/branding
+    $1,397 → https://agentflowos.ai/branding?bundle=1
+    $197 → https://agentflowos.ai/guide
+    $397 → https://agentflowos.ai/thankyou
+  Deactivate/remove the old $247 Payment Link in Stripe.
+
+  Files: funnel-02 → /branding · funnel-03-branding.html → /guide · funnel-04-dfy.html = redirect stub for old /dfy · funnel-05 → /thankyou
+
+  PAGE 1 = this file. Only two checkouts here:
+    • Growth Kit $697 → STRIPE_GROWTH_KIT_697 below
+    • Ultimate $1,397 → STRIPE_ULTIMATE_1397 below
+  Display price is always $1,397 (not $1,497). Re-paste this file into GHL if live HTML drifted.
+
+  No $397 / $197 checkout buttons on this landing page.
+
+  GHL: paste the ENTIRE file in one Custom Code block that allows <script> (not “HTML only” sanitizers).
+  Demo uses delegated clicks — no inline onclick on pathway / Play Through.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AgentFlowOS — Medicare Growth Kit™</title>
+<link rel="icon" href="https://assets.cdn.filesafe.space/aalZz3JfkmBWlXlpqvSa/media/69d1086b849c507b529d3916.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+/* Stripe Payment Links — paste your live links from dashboard.stripe.com/payment-links */
+const STRIPE_GROWTH_KIT_697 = "https://buy.stripe.com/3cIbJ1ea85xY1mC6fe6sw00";
+const STRIPE_ULTIMATE_1397 = "https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04";
+
+const LINKS = {
+  stripe697: STRIPE_GROWTH_KIT_697,
+  stripeUltimate: STRIPE_ULTIMATE_1397,
+  email: "hello@agentflowos.com"
+};
+const IRMAA={
+  single:[{max:109000,b:0,d:0,t:0},{max:137000,b:81.20,d:14.50,t:1},{max:171000,b:202.90,d:37.50,t:2},{max:205000,b:324.60,d:60.40,t:3},{max:499999,b:446.30,d:83.30,t:4},{max:Infinity,b:487.00,d:91.00,t:5}],
+  mfj:[{max:218000,b:0,d:0,t:0},{max:274000,b:81.20,d:14.50,t:1},{max:342000,b:202.90,d:37.50,t:2},{max:410000,b:324.60,d:60.40,t:3},{max:749999,b:446.30,d:83.30,t:4},{max:Infinity,b:487.00,d:91.00,t:5}],
+  mfs:[{max:109000,b:0,d:0,t:0},{max:Infinity,b:446.30,d:83.30,t:4}],
+  tiers:["No Surcharge","Tier 1","Tier 2","Tier 3","Tier 4","Tier 5 — Max"]
+};
+const PATHWAYS={
+  0:{label:"New to Medicare",steps:[
+    {tag:"Getting Started · Step 1 of 6",q:"Where are you in your Medicare journey?",hint:"Your answer shapes every question and recommendation in your report.",prog:14,opts:[{ico:"🎂",t:"New to Medicare",d:"Turning 65 soon or just becoming eligible",pick:true},{ico:"🔄",t:"Already on Medicare",d:"Want to review coverage or lower costs"},{ico:"💼",t:"Employer coverage",d:"Deciding when and how to transition"},{ico:"⚕️",t:"Disability/SSDI",d:"Under 65, on Medicare"}],next:"✓ Pathway selected — next: birthday month/year, Social Security status, employer coverage."},
+    {tag:"New to Medicare · Step 2 of 6",q:"Are you collecting Social Security benefits?",hint:"This determines whether Medicare auto-enrolled you or whether you must actively apply.",prog:30,opts:[{ico:"✅",t:"Yes — receiving SS now",d:"Medicare auto-enrolled; card arrives 3 months before birthday",pick:true},{ico:"⏳",t:"No — planning to delay",d:"Must actively apply at SSA.gov during IEP"},{ico:"❓",t:"Not sure",d:"We'll help you check"}],next:"⚠️ Delaying SS = NOT auto-enrolled. Must apply at SSA.gov before your IEP closes."},
+    {tag:"New to Medicare · Step 5 of 6",q:"What was your 2024 household income?",hint:"Higher earners pay $81–$487/month extra in Medicare surcharges.",prog:72,irmaa:true},
+    {prog:90,gate:true},{prog:95,generating:true},{prog:100,report:true}
+  ],
+  insights:[{cl:"re",tag:"💰 Savings",lbl:"IRMAA Found",val:"$2,886/yr — appeal possible"},{cl:"am",tag:"⚠️ Risk",lbl:"Enrollment Deadline",val:"IEP closes October 2026"},{cl:"bl",tag:"📅 Timeline",lbl:"July 2026 Birthday",val:"7-month IEP window open now"},{cl:"gr",tag:"🗺 Plan",lbl:"Medicare Supplement G",val:"Predictable costs, any provider"}],
+  timeline:[{dot:"bl",date:"Now – April 2026",ev:"IEP Is Open",note:"Enroll now for July 1 coverage start.",chip:"gr",chipLabel:"IEP Open"},{dot:"am",date:"July 2026 — Birthday",ev:"65th Birthday · Eligibility Begins",note:"Not on SS = must actively apply at SSA.gov.",chip:"am",chipLabel:"Key Date"},{dot:"re",date:"October 2026",ev:"IEP Closes — Hard Deadline",note:"Miss this = 10% permanent Part B penalty per year late.",chip:"re",chipLabel:"Hard Deadline"}],
+  ghl:["Pathway: New to Medicare","IRMAA Tier: Tier 2","Monthly Surcharge: $240.40","Annual Surcharge: $2,885","Birth Month/Year: July 1960","SS Status: Delaying","Employer Coverage: No","Plan Priority: Predictability"],
+  tags:["New to Medicare","IRMAA Tier 2","Has IRMAA Surcharge","IEP Open"]},
+  1:{label:"Already on Medicare",steps:[
+    {tag:"Getting Started · Step 1 of 5",q:"Where are you in your Medicare journey?",hint:"Your answer shapes every question and recommendation.",prog:14,opts:[{ico:"🎂",t:"New to Medicare",d:"Turning 65 soon"},{ico:"🔄",t:"Already on Medicare",d:"Want to review coverage or lower costs",pick:true},{ico:"💼",t:"Employer coverage",d:"Transition planning"},{ico:"⚕️",t:"Disability/SSDI",d:"Under 65"}],next:"✓ Medicare Review pathway — next: current plan type, what's prompting this review."},
+    {tag:"Medicare Review · Step 2 of 5",q:"What type of Medicare plan are you currently on?",hint:"Determines what options are available and when changes can be made.",prog:35,opts:[{ico:"🛡",t:"Medicare Supplement + Part D",d:"Original Medicare with a Medigap plan",pick:true},{ico:"⭐",t:"Medicare Advantage",d:"All-in-one plan through private insurer"},{ico:"📋",t:"Original Medicare only",d:"No Supplement or Advantage"},{ico:"❓",t:"Not sure",d:"We'll help identify your current coverage"}],next:"✓ On Supplement — can compare carriers anytime for lower premiums. Same Plan G, different price."},
+    {tag:"Medicare Review · Step 4 of 5",q:"What was your 2024 household income?",hint:"Checks for IRMAA surcharge reduction opportunities.",prog:72,irmaa:true},
+    {prog:90,gate:true},{prog:95,generating:true},{prog:100,report:true}
+  ],
+  insights:[{cl:"gr",tag:"💰 Opportunity",lbl:"Carrier Comparison",val:"Save $40–$120/mo — same Plan G"},{cl:"re",tag:"⚠️ IRMAA",lbl:"Surcharge Found",val:"$2,886/yr — review income appeal"},{cl:"bl",tag:"📅 Timeline",lbl:"AEP: Oct 15 – Dec 7",val:"Annual review window opens"},{cl:"am",tag:"🗺 Action",lbl:"Compare All Carriers",val:"Same benefits, lower premium"}],
+  timeline:[{dot:"gr",date:"Now — Anytime",ev:"Supplement Carrier Comparison",note:"Same Plan G, different premiums. Shop now, save immediately.",chip:"gr",chipLabel:"Available Now"},{dot:"bl",date:"Oct 15 – Dec 7, 2026",ev:"Annual Enrollment Period",note:"Switch Part D or Advantage plans. Review formulary every year.",chip:"bl",chipLabel:"AEP Window"},{dot:"am",date:"Your Birthday Month",ev:"Best Time to Switch Carriers",note:"Birthday rule: guaranteed-issue switch to lower premium in most states.",chip:"am",chipLabel:"Savings Window"}],
+  ghl:["Pathway: Medicare Review","Current Plan: Supplement + Part D","IRMAA Tier: Tier 2","Annual Surcharge: $2,886","Review Reason: Lower costs"],
+  tags:["Medicare Review","IRMAA Tier 2","Has IRMAA Surcharge","Supplement Enrolled"]},
+  2:{label:"Employer Coverage",steps:[
+    {tag:"Getting Started · Step 1 of 6",q:"Where are you in your Medicare journey?",hint:"Your answer shapes every question and recommendation.",prog:14,opts:[{ico:"🎂",t:"New to Medicare",d:"Turning 65 soon"},{ico:"🔄",t:"Already on Medicare",d:"Review coverage"},{ico:"💼",t:"I have employer coverage",d:"Deciding when and how to transition",pick:true},{ico:"⚕️",t:"Disability/SSDI",d:"Under 65"}],next:"✓ Employer coverage — the most critical question next: employer size. This changes everything."},
+    {tag:"Employer Coverage · Step 2 — CRITICAL",q:"How many employees does your employer have?",hint:"This is the single most important Medicare question for active workers.",prog:35,opts:[{ico:"🏢",t:"20 or more employees",d:"Medicare is SECONDARY — can delay Part B penalty-free",pick:true},{ico:"🏪",t:"Under 20 employees",d:"Medicare is PRIMARY — must enroll at 65 regardless"},{ico:"🏗",t:"Self-employed or unsure",d:"Requires careful analysis"}],next:"✅ 20+ employees = delay Part B penalty-free while actively employed. Only 8-month SEP after leaving."},
+    {tag:"Employer Coverage · Step 5 of 6",q:"What was your 2024 household income?",hint:"IRMAA often overlooked in employer-to-Medicare transitions.",prog:72,irmaa:true},
+    {prog:90,gate:true},{prog:95,generating:true},{prog:100,report:true}
+  ],
+  insights:[{cl:"gr",tag:"✅ Confirmed",lbl:"Delay Authorized",val:"20+ employees = no penalty"},{cl:"re",tag:"⚠️ Critical",lbl:"SEP Window = 8 Months",val:"From employer coverage end date"},{cl:"am",tag:"📅 Action",lbl:"63 Days for Part D",val:"Shorter deadline — enroll immediately"},{cl:"bl",tag:"💡 Planning",lbl:"HSA: Stop 6 Months Before",val:"Medicare + HSA can't coexist"}],
+  timeline:[{dot:"gr",date:"While Employed (20+ Co.)",ev:"Delay Part B — Penalty Free",note:"Keep employer coverage as primary. Medicare not required.",chip:"gr",chipLabel:"No Penalty"},{dot:"re",date:"Day Employer Coverage Ends",ev:"SEP Opens — 8 Months",note:"Clock starts the day active employer coverage ends — not COBRA end date.",chip:"re",chipLabel:"SEP Starts"},{dot:"re",date:"63 Days After Coverage Ends",ev:"Part D Hard Deadline",note:"1% permanent penalty per uncovered month. 63 days only — no COBRA extension.",chip:"re",chipLabel:"Hard Deadline"}],
+  ghl:["Pathway: Employer Transition","Employer Size: 20+","Medicare Status: Secondary","SEP: 8 months after retirement","Part D Deadline: 63 days","IRMAA Tier: Tier 2"],
+  tags:["Employer Transition","Large Employer SEP","IRMAA Tier 2","HSA Alert"]},
+  3:{label:"Medicare via Disability",steps:[
+    {tag:"Getting Started · Step 1 of 5",q:"Where are you in your Medicare journey?",hint:"Your answer shapes every question and recommendation.",prog:14,opts:[{ico:"🎂",t:"New to Medicare",d:"Turning 65 soon"},{ico:"🔄",t:"Already on Medicare",d:"Review coverage"},{ico:"💼",t:"Employer coverage",d:"Transition planning"},{ico:"⚕️",t:"Medicare via disability",d:"On Medicare through SSDI, under 65",pick:true}],next:"✓ Disability pathway — next: how long on Medicare, approaching 65, and coverage gaps."},
+    {tag:"Disability/SSDI · Step 2 of 5",q:"How long have you been receiving Medicare through SSDI?",hint:"Determines upcoming transition options and the critical 65th birthday window.",prog:35,opts:[{ico:"📅",t:"Less than 2 years",d:"Still in 24-month Medicare waiting period",pick:true},{ico:"📋",t:"2–4 years",d:"On Medicare, approaching special windows"},{ico:"🎂",t:"Approaching age 65",d:"Critical: Medigap Golden Window opening soon"},{ico:"✅",t:"More than 5 years",d:"Fully established on Medicare"}],next:"✓ Under 2 years — Medigap open enrollment begins when you first enroll in Part B, not at 65. This window may already be open."},
+    {tag:"Disability · Step 4 of 5",q:"What was your 2024 household income?",hint:"SSDI recipients can still be subject to IRMAA if other income applies.",prog:72,irmaa:true},
+    {prog:90,gate:true},{prog:95,generating:true},{prog:100,report:true}
+  ],
+  insights:[{cl:"am",tag:"⚠️ Urgent",lbl:"Medigap Window Open",val:"6 months from Part B start — guaranteed issue"},{cl:"bl",tag:"📅 Timeline",lbl:"65th Birthday Critical",val:"IEP opens 3 months before"},{cl:"re",tag:"💊 Action",lbl:"Part D Review Needed",val:"Annual formulary changes affect SSDI"},{cl:"gr",tag:"✅ Available",lbl:"Extra Help / LIS",val:"Reduces Part D costs significantly"}],
+  timeline:[{dot:"am",date:"From Part B Start Date",ev:"Medigap Open Enrollment (6 months)",note:"Guaranteed issue — no health questions. One-time, irreplaceable. Does NOT reset at 65.",chip:"am",chipLabel:"Open Now"},{dot:"bl",date:"3 Months Before 65th Birthday",ev:"Second IEP Opens",note:"At 65, a new Initial Enrollment Period begins — additional plan options.",chip:"bl",chipLabel:"Upcoming"},{dot:"gr",date:"Anytime",ev:"Apply for LIS / Extra Help",note:"Can eliminate Part D premium, deductible, and most copays.",chip:"gr",chipLabel:"Apply Now"}],
+  ghl:["Pathway: Disability/SSDI","Medicare Duration: Under 2 years","Medigap Window: Open","Approaching 65: No","LIS Eligible: Possible"],
+  tags:["Disability Medicare","Medigap Window Open","SSDI Enrolled","LIS Review"]}
+};
+</script>
+
+<style>
+/* ── TOKENS ── */
+#afos-mgk {
+  --or:#f97316;--or-dk:#ea6500;--or-lt:#fff7ed;
+  --bl:#1d6bf3;--bl-lt:#eef4ff;--bl-md:#c7d9fd;
+  --ink:#0a0f1e;--navy:#0f172a;
+  --body:#374151;--mid:#6b7280;--faint:#9ca3af;
+  --bdr:#e5e7eb;--bdr2:#d1d5db;
+  --bg:#fff;--bg2:#fafafa;--bg3:#f3f4f6;
+  --grn:#16a34a;--gr-lt:#f0fdf4;--gr-md:#bbf7d0;
+  --red:#dc2626;--re-lt:#fef2f2;
+  --warn:#d97706;--wa-lt:#fffbeb;
+  --pur:#7c3aed;
+  --fd:'Bricolage Grotesque',sans-serif;
+  --fb:'IBM Plex Sans',sans-serif;
+  --max:1100px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-s:cubic-bezier(.34,1.56,.64,1);
+  --sh-sm:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 1px 4px rgba(0,0,0,.04);
+  --sh-lg:0 8px 32px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.05);
+  --r:12px;--rs:8px;--rl:18px;
+  --grad:linear-gradient(135deg,var(--or) 0%,var(--bl) 100%);
+}
+
+/* ── RESET ── */
+#afos-mgk, #afos-mgk *, #afos-mgk *::before, #afos-mgk *::after {box-sizing:border-box;margin:0;padding:0;}
+
+#afos-mgk {font-family:var(--fb);font-size:17px;line-height:1.65;color:var(--body);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+
+/* ── NAV ── */
+#afos-mgk .nav{position:sticky;top:0;z-index:300;background:rgba(255,255,255,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);}
+#afos-mgk .nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--or),var(--bl));opacity:.6;}
+#afos-mgk .nav-in{max-width:var(--max);margin:0 auto;padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+#afos-mgk .nav-logo{height:28px;object-fit:contain;}
+#afos-mgk .nav-links{display:flex;align-items:center;gap:6px;}
+#afos-mgk .nl{font-size:.85rem;font-weight:600;color:var(--mid);text-decoration:none;padding:6px 12px;border-radius:6px;transition:color .14s,background .14s;white-space:nowrap;}
+#afos-mgk .nl:hover{color:var(--ink);background:var(--bg3);}
+#afos-mgk .nav-cta{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:var(--or);color:#fff;font-family:var(--fb);font-size:.88rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .14s,transform .12s;box-shadow:0 2px 8px rgba(249,115,22,.30);}
+#afos-mgk .nav-cta-muted{background:transparent;color:var(--ink);border:1.5px solid var(--bdr2);box-shadow:none;}
+#afos-mgk .nav-cta-muted:hover{background:var(--bg3);border-color:var(--bdr);transform:translateY(-1px);}
+#afos-mgk .stripe-return{background:linear-gradient(90deg,var(--wa-lt),#fff7ed);border-bottom:1px solid #fcd34d;padding:10px 16px;text-align:center;font-size:.84rem;color:#78350f;position:relative;z-index:299;}
+#afos-mgk .stripe-return-in{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 14px;}
+#afos-mgk .stripe-return a{color:var(--or-dk);font-weight:700;text-decoration:underline;}
+#afos-mgk .stripe-return-x{margin-left:8px;width:28px;height:28px;border:none;border-radius:8px;background:rgba(0,0,0,.06);cursor:pointer;font-size:1.1rem;line-height:1;color:#78350f;}
+#afos-mgk .stripe-return-x:hover{background:rgba(0,0,0,.1);}
+#afos-mgk .nav-cta:hover:not(.nav-cta-muted){background:var(--or-dk);transform:translateY(-1px);}
+
+/* ── LAYOUT ── */
+#afos-mgk .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
+#afos-mgk .wrap-sm{max-width:680px;margin:0 auto;padding:0 24px;}
+#afos-mgk .wrap-md{max-width:880px;margin:0 auto;padding:0 24px;}
+#afos-mgk .ctr{text-align:center;}.ctr .ss{margin-left:auto;margin-right:auto;}
+
+/* ── TYPE SCALE ── */
+#afos-mgk .tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:var(--or);background:var(--or-lt);border:1px solid #fed7aa;padding:4px 12px;border-radius:100px;margin-bottom:14px;}
+#afos-mgk .tag.blue{color:var(--bl);background:var(--bl-lt);border-color:var(--bl-md);}
+#afos-mgk .sh{font-family:var(--fd);font-size:clamp(1.8rem,3.8vw,2.8rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;color:var(--ink);margin-bottom:12px;}
+#afos-mgk .ss{font-size:1.05rem;color:var(--mid);line-height:1.7;max-width:520px;margin-bottom:36px;}
+
+/* ── HERO ── */
+#afos-mgk .hero{padding:80px 0 0;overflow:hidden;position:relative;}
+#afos-mgk .hero::before{content:'';position:absolute;top:0;left:0;right:0;height:420px;background:radial-gradient(ellipse at 25% 0%,rgba(249,115,22,.08),transparent 50%),radial-gradient(ellipse at 75% 0%,rgba(29,107,243,.08),transparent 50%);pointer-events:none;}
+#afos-mgk .hero-in{text-align:center;position:relative;z-index:1;}
+#afos-mgk .hero-logo{height:46px;object-fit:contain;margin-bottom:28px;animation:rise .5s var(--ease) both;}
+#afos-mgk .hero-pill{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--ink);background:var(--bg);border:1.5px solid transparent;background-clip:padding-box;padding:6px 18px;border-radius:100px;margin-bottom:22px;animation:rise .5s .08s var(--ease) both;position:relative;}
+#afos-mgk .hero-pill::before{content:'';position:absolute;inset:-1.5px;border-radius:100px;background:linear-gradient(135deg,var(--or),var(--bl));z-index:-1;}
+#afos-mgk .pill-dot{width:7px;height:7px;background:var(--grad);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+#afos-mgk .hero h1{font-family:var(--fd);font-size:clamp(2.2rem,5.5vw,3.9rem);font-weight:800;line-height:1.06;letter-spacing:-.04em;color:var(--ink);max-width:820px;margin:0 auto 20px;animation:rise .5s .14s var(--ease) both;}
+#afos-mgk .hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+#afos-mgk .hero-sub{font-size:1.1rem;color:var(--mid);line-height:1.7;max-width:520px;margin:0 auto 32px;font-weight:500;animation:rise .5s .2s var(--ease) both;}
+#afos-mgk .hero-ctas{display:flex;flex-direction:column;align-items:center;gap:12px;animation:rise .5s .26s var(--ease) both;margin-bottom:56px;}
+#afos-mgk .hero-ctas-dual{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:100%;max-width:520px;}
+@media(min-width:560px){
+  #afos-mgk .hero-ctas-dual{flex-direction:row;flex-wrap:wrap;justify-content:center;max-width:640px;}
+  #afos-mgk .hero-ctas-dual .btn-hero{flex:1 1 200px;justify-content:center;}
+}
+#afos-mgk .btn-hero{display:inline-flex;align-items:center;gap:9px;padding:17px 36px;background:var(--or);color:#fff;font-family:var(--fb);font-size:1.05rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;text-decoration:none;transition:background .14s,transform .12s,box-shadow .15s;box-shadow:0 4px 20px rgba(249,115,22,.35);}
+#afos-mgk .btn-hero:hover{background:var(--or-dk);transform:translateY(-2px);box-shadow:0 8px 28px rgba(249,115,22,.4);}
+#afos-mgk .btn-hero-ghost{background:#fff;color:var(--or);border:2px solid var(--or);box-shadow:0 2px 12px rgba(249,115,22,.12);}
+#afos-mgk .btn-hero-ghost:hover{background:var(--or-lt);transform:translateY(-2px);box-shadow:0 6px 20px rgba(249,115,22,.2);}
+#afos-mgk .fc-sec .btn-hero-ghost:hover{background:rgba(255,255,255,.22)!important;border-color:rgba(255,255,255,.85)!important;box-shadow:0 6px 24px rgba(0,0,0,.2)!important;}
+#afos-mgk .btn-hero svg{transition:transform .2s var(--ease-s);}
+#afos-mgk .btn-hero:hover svg{transform:translateX(3px);}
+#afos-mgk .hero-note{font-size:.85rem;color:var(--faint);max-width:480px;text-align:center;line-height:1.5;}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STATS BAR ── */
+#afos-mgk .sbar{border-top:1px solid var(--bdr);background:var(--bg2);padding:22px 0;animation:rise .5s .32s var(--ease) both;}
+#afos-mgk .sbar-in{max-width:var(--max);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;}
+#afos-mgk .si{text-align:center;padding:8px 28px;border-right:1px solid var(--bdr);}
+#afos-mgk .si:last-child{border-right:none;}
+#afos-mgk .si-n{font-family:var(--fd);font-size:1.55rem;font-weight:800;line-height:1;margin-bottom:4px;letter-spacing:-.025em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+#afos-mgk .si:nth-child(odd) .si-n{background:none;-webkit-text-fill-color:var(--or);}
+#afos-mgk .si:nth-child(even) .si-n{background:none;-webkit-text-fill-color:var(--bl);}
+#afos-mgk .si-l{font-size:.7rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.08em;}
+
+/* ── PROB ── */
+#afos-mgk .prob{padding:80px 0;}
+#afos-mgk .prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:32px;}
+#afos-mgk .pc{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:24px;transition:border-color .15s,box-shadow .15s;}
+#afos-mgk .pc:hover{border-color:var(--bdr2);box-shadow:var(--sh-sm);}
+#afos-mgk .pc-ico{font-size:1.4rem;margin-bottom:9px;display:block;}
+#afos-mgk .pc-t{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
+#afos-mgk .pc-b{font-size:.9rem;color:var(--mid);line-height:1.6;}
+
+/* ── DEMO (Pathway Player) ── */
+#afos-mgk .demos{padding:80px 0;background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);}
+#afos-mgk .pw-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:24px;}
+#afos-mgk .pw-btn{padding:14px 12px;border:2px solid var(--bdr);border-radius:12px;background:#fff;cursor:pointer;text-align:center;transition:all .18s;font-family:var(--fb);width:100%;-webkit-appearance:none;appearance:none;color:inherit;}
+#afos-mgk .pw-btn:hover{border-color:var(--or);box-shadow:0 4px 14px rgba(249,115,22,.15);transform:translateY(-2px);}
+#afos-mgk .pw-btn.active{border-color:var(--bl);background:var(--bl-lt);box-shadow:0 4px 14px rgba(29,107,243,.18);transform:translateY(-2px);}
+#afos-mgk .pw-ico{font-size:1.5rem;margin-bottom:6px;display:block;}
+#afos-mgk .pw-lbl{font-size:.82rem;font-weight:700;color:var(--ink);line-height:1.3;}
+#afos-mgk .pw-sub{font-size:.7rem;color:var(--mid);margin-top:3px;}
+#afos-mgk .pw-btn.active .pw-lbl{color:var(--bl);}
+#afos-mgk .player-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+#afos-mgk .col-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:var(--mid);margin-bottom:10px;}
+
+/* browser chrome */
+#afos-mgk .sim-brow{background:#fff;border:1px solid var(--bdr);border-radius:14px;overflow:hidden;box-shadow:var(--sh-lg);}
+#afos-mgk .sim-bar{height:36px;background:var(--bg3);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 12px;gap:5px;}
+#afos-mgk .bd{width:10px;height:10px;border-radius:50%;}
+#afos-mgk .burl{flex:1;background:var(--bdr);border-radius:5px;height:19px;margin:0 8px;display:flex;align-items:center;padding:0 10px;font-size:.65rem;color:var(--mid);font-family:var(--fb);}
+#afos-mgk .sim-body{padding:16px;}
+#afos-mgk .ag-strip{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;margin-bottom:12px;}
+#afos-mgk .ag-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--bl),#60a5fa);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;}
+#afos-mgk .ag-nm{font-size:.85rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:1px;}
+#afos-mgk .ag-tt{font-size:.7rem;color:var(--mid);}
+#afos-mgk .ag-on{margin-left:auto;font-size:.7rem;font-weight:600;color:var(--grn);}
+#afos-mgk .sim-prog{height:3px;background:var(--bdr);border-radius:100px;margin-bottom:12px;overflow:hidden;}
+#afos-mgk .sim-pf{height:100%;background:linear-gradient(90deg,var(--or),var(--bl));border-radius:100px;transition:width .6s var(--ease);}
+#afos-mgk .sim-step{display:none;animation:sf .3s var(--ease);}
+#afos-mgk .sim-step.active{display:block;}
+@keyframes sf{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+#afos-mgk .sim-tag{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--bl);margin-bottom:4px;}
+#afos-mgk .sim-q{font-family:var(--fd);font-size:.98rem;font-weight:700;color:var(--ink);line-height:1.25;letter-spacing:-.015em;margin-bottom:3px;}
+#afos-mgk .sim-hint{font-size:.76rem;color:var(--mid);margin-bottom:10px;line-height:1.5;}
+#afos-mgk .sim-opts{display:flex;flex-direction:column;gap:6px;}
+#afos-mgk .sim-opt{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;background:var(--bg2);border:1.5px solid var(--bdr);border-radius:8px;font-family:var(--fb);opacity:0;transform:translateX(-8px);transition:opacity .28s,transform .28s,border-color .14s,background .14s;}
+#afos-mgk .sim-opt.show{opacity:1;transform:translateX(0);}
+#afos-mgk .sim-opt.pick{border-color:var(--bl);background:var(--bl-lt);}
+#afos-mgk .soi{font-size:.95rem;flex-shrink:0;margin-top:1px;}
+#afos-mgk .sol{font-size:.84rem;font-weight:700;color:var(--ink);margin-bottom:1px;}
+#afos-mgk .sod{font-size:.72rem;color:var(--mid);}
+#afos-mgk .sim-opt.pick .sol{color:var(--bl);}
+#afos-mgk .sck{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--bdr2);margin-left:auto;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#fff;transition:all .18s;}
+#afos-mgk .sim-opt.pick .sck{background:var(--bl);border-color:var(--bl);}
+#afos-mgk .sim-next{padding:9px 12px;border-radius:7px;font-size:.78rem;line-height:1.5;margin-top:8px;border:1.5px solid;opacity:0;transform:translateY(5px);transition:opacity .3s .3s,transform .3s .3s;}
+#afos-mgk .sim-next.show{opacity:1;transform:translateY(0);}
+#afos-mgk .sim-next.blue{background:var(--bl-lt);border-color:var(--bl-md);color:#1e40af;}
+#afos-mgk .sim-next.red{background:var(--re-lt);border-color:#fecaca;color:#7f1d1d;}
+#afos-mgk .sim-next.grn{background:var(--gr-lt);border-color:var(--gr-md);color:#14532d;}
+#afos-mgk .sim-next.amber{background:var(--wa-lt);border-color:#fed7aa;color:#7c2d12;}
+
+/* gate, generating, report inside player */
+#afos-mgk .gate-tiles{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+#afos-mgk .gate-tile{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:8px;padding:10px;position:relative;overflow:hidden;}
+#afos-mgk .gate-tile-l{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);margin-bottom:3px;}
+#afos-mgk .gate-tile-v{font-family:var(--fd);font-size:.95rem;font-weight:800;color:var(--ink);}
+#afos-mgk .gate-tile-v.grn{color:var(--grn);}
+#afos-mgk .gate-tile-v.red{color:var(--red);}
+#afos-mgk .gate-locked::after{content:'🔒';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.9rem;background:rgba(250,250,250,.9);backdrop-filter:blur(4px);border-radius:6px;}
+#afos-mgk .gen-box{display:flex;align-items:center;gap:10px;padding:13px;background:var(--bl-lt);border:1.5px solid var(--bl-md);border-radius:10px;font-size:.84rem;color:var(--bl);font-weight:600;}
+#afos-mgk .gen-spin{width:16px;height:16px;border:2.5px solid var(--bl-md);border-top-color:var(--bl);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0;}
+@keyframes sp{to{transform:rotate(360deg)}}
+#afos-mgk .ic-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
+#afos-mgk .ic{border-radius:8px;padding:10px;border:1.5px solid;}
+#afos-mgk .ic.bl{background:var(--bl-lt);border-color:var(--bl-md);}
+#afos-mgk .ic.re{background:var(--re-lt);border-color:#fecaca;}
+#afos-mgk .ic.am{background:var(--wa-lt);border-color:#fed7aa;}
+#afos-mgk .ic.gr{background:var(--gr-lt);border-color:var(--gr-md);}
+#afos-mgk .ic-tag{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;margin-bottom:3px;}
+#afos-mgk .ic.bl .ic-tag{color:var(--bl);}.ic.re .ic-tag{color:var(--red);}.ic.am .ic-tag{color:var(--warn);}.ic.gr .ic-tag{color:var(--grn);}
+#afos-mgk .ic-lbl{font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:2px;}
+#afos-mgk .ic-val{font-size:.7rem;color:var(--mid);}
+#afos-mgk .rep-cta{background:var(--navy);border-radius:9px;padding:13px;text-align:center;margin-top:7px;}
+#afos-mgk .rca-tag{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:#60a5fa;margin-bottom:4px;}
+#afos-mgk .rca-ttl{font-family:var(--fd);font-size:.88rem;font-weight:800;color:#fff;margin-bottom:4px;}
+#afos-mgk .rca-sub{font-size:.7rem;color:rgba(255,255,255,.55);margin-bottom:10px;}
+#afos-mgk .rca-btn{display:block;padding:9px;background:var(--or);color:#fff;font-family:var(--fb);font-size:.82rem;font-weight:700;border-radius:6px;text-decoration:none;}
+#afos-mgk .tli{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--bdr);}
+#afos-mgk .tli:last-child{border-bottom:none;padding-bottom:0;}
+#afos-mgk .tldot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+#afos-mgk .tldot.bl{background:var(--bl);}.tldot.am{background:var(--warn);}.tldot.re{background:var(--red);}.tldot.gr{background:var(--grn);}
+#afos-mgk .tl-date{font-size:.68rem;font-weight:700;color:var(--ink);margin-bottom:1px;}
+#afos-mgk .tl-ev{font-size:.76rem;font-weight:600;color:var(--ink);margin-bottom:2px;}
+#afos-mgk .tl-note{font-size:.68rem;color:var(--mid);line-height:1.45;}
+#afos-mgk .tlchip{display:inline-block;padding:2px 7px;border-radius:100px;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+#afos-mgk .tlchip.bl{background:var(--bl-lt);color:var(--bl);border:1px solid var(--bl-md);}
+#afos-mgk .tlchip.am{background:var(--wa-lt);color:var(--warn);border:1px solid #fed7aa;}
+#afos-mgk .tlchip.re{background:var(--re-lt);color:var(--red);border:1px solid #fecaca;}
+#afos-mgk .tlchip.gr{background:var(--gr-lt);color:var(--grn);border:1px solid var(--gr-md);}
+
+/* right panel — GHL output */
+#afos-mgk .rp-card{background:#fff;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin-bottom:10px;opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s;}
+#afos-mgk .rp-card.show{opacity:1;transform:translateY(0);}
+#afos-mgk .rp-hd{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--bdr);background:var(--bg2);}
+#afos-mgk .rp-tag{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:var(--mid);}
+#afos-mgk .rp-ttl{font-family:var(--fd);font-size:.85rem;font-weight:700;color:var(--ink);}
+#afos-mgk .rp-body{padding:11px 13px;}
+#afos-mgk .rp-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);font-size:.78rem;}
+#afos-mgk .rp-row:last-child{border-bottom:none;}
+#afos-mgk .rp-l{color:var(--mid);}.rp-v{font-weight:700;color:var(--bl);}
+#afos-mgk .sms-bub{background:var(--bg2);border-radius:10px;padding:10px 13px;font-size:.78rem;line-height:1.6;border:1px solid var(--bdr);}
+#afos-mgk .pipe-row{display:flex;align-items:center;gap:0;overflow-x:auto;padding:4px 0;}
+#afos-mgk .pipe-stage{padding:5px 9px;border-radius:5px;font-size:.7rem;font-weight:700;white-space:nowrap;flex-shrink:0;}
+#afos-mgk .pipe-arr{font-size:.78rem;color:var(--faint);margin:0 2px;flex-shrink:0;}
+
+/* controls */
+#afos-mgk .player-ctrls{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap;}
+#afos-mgk .ctrl{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .14s;font-family:var(--fb);}
+#afos-mgk .ctrl-play{background:var(--or);color:#fff;border-color:var(--or);box-shadow:0 2px 8px rgba(249,115,22,.30);}
+#afos-mgk .ctrl-play:hover{background:var(--or-dk);}
+#afos-mgk .ctrl-step{background:#fff;color:var(--bl);border-color:var(--bl);}
+#afos-mgk .ctrl-step:hover{background:var(--bl-lt);}
+#afos-mgk .ctrl-rst{background:#fff;color:var(--mid);border-color:var(--bdr);}
+#afos-mgk .ctrl-rst:hover{border-color:var(--bdr2);color:var(--ink);}
+#afos-mgk .ctrl-stat{font-size:.76rem;color:var(--mid);margin-left:auto;}
+
+/* ── FEATURES ── */
+#afos-mgk .feats{padding:80px 0;}
+#afos-mgk .feat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:32px;}
+#afos-mgk .fc{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:24px;transition:border-color .15s,box-shadow .15s,transform .15s;}
+#afos-mgk .fc:hover{border-color:var(--bdr2);box-shadow:var(--sh-md);transform:translateY(-2px);}
+#afos-mgk .fc-ico{font-size:1.5rem;margin-bottom:11px;display:block;}
+#afos-mgk .fc-name{font-family:var(--fd);font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:5px;letter-spacing:-.01em;}
+#afos-mgk .fc-desc{font-size:.88rem;color:var(--mid);line-height:1.65;}
+#afos-mgk .fc-badge{display:inline-block;margin-top:9px;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;padding:3px 9px;border-radius:100px;}
+#afos-mgk .fb-a{background:var(--gr-lt);color:var(--grn);border:1px solid var(--gr-md);}
+#afos-mgk .fb-s{background:var(--or-lt);color:var(--or);border:1px solid #fed7aa;}
+#afos-mgk .fb-u{background:var(--bl-lt);color:var(--bl);border:1px solid var(--bl-md);}
+
+/* ── SNAP ── */
+#afos-mgk .snap{padding:80px 0;background:var(--bg2);}
+#afos-mgk .snap-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rl);padding:40px;box-shadow:var(--sh-md);}
+#afos-mgk .snap-2c{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
+#afos-mgk .snap-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+#afos-mgk .sg{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);padding:14px;}
+#afos-mgk .sg-ico{font-size:1.1rem;margin-bottom:5px;}
+#afos-mgk .sg-t{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:2px;}
+#afos-mgk .sg-b{font-size:.78rem;color:var(--mid);line-height:1.55;}
+
+/* ── HOW ── */
+#afos-mgk .how{padding:80px 0;}
+#afos-mgk .how-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-top:32px;}
+#afos-mgk .hw-n{width:38px;height:38px;border-radius:50%;background:var(--grad);color:#fff;font-family:var(--fd);font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 2px 10px rgba(249,115,22,.28);}
+#afos-mgk .hw-t{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
+#afos-mgk .hw-b{font-size:.85rem;color:var(--mid);line-height:1.6;}
+
+/* ── ROI ── */
+#afos-mgk .roi{padding:80px 0;background:var(--bg2);}
+#afos-mgk .roi-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--rl);padding:52px 40px;max-width:680px;margin:0 auto;text-align:center;box-shadow:var(--sh-md);position:relative;overflow:hidden;}
+#afos-mgk .roi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+#afos-mgk .roi-n{font-family:var(--fd);font-size:4rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.04em;line-height:1;margin-bottom:10px;}
+#afos-mgk .roi-t{font-family:var(--fd);font-size:1.5rem;font-weight:800;color:var(--ink);letter-spacing:-.025em;margin-bottom:10px;}
+#afos-mgk .roi-b{font-size:1rem;color:var(--mid);line-height:1.7;max-width:460px;margin:0 auto;}
+
+/* ── GUIDE ── */
+#afos-mgk .guide-sec{padding:80px 0;}
+#afos-mgk .guide-label-bar{background:#fff;border:1.5px solid #fcd34d;border-radius:var(--r) var(--r) 0 0;padding:22px 28px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;border-bottom:none;}
+#afos-mgk .guide-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1.5px solid #fcd34d;border-radius:0 0 var(--r) var(--r);overflow:hidden;box-shadow:var(--sh-md);}
+#afos-mgk .gp{background:#fff;border-right:1px solid var(--bdr);border-bottom:1px solid var(--bdr);}
+#afos-mgk .gp:nth-child(3n){border-right:none;}
+#afos-mgk .gp:nth-last-child(-n+3){border-bottom:none;}
+#afos-mgk .gp-hd{padding:12px 15px 10px;border-bottom:1px solid var(--bdr);background:var(--navy);}
+#afos-mgk .gp-sec{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#fdba74;margin-bottom:3px;}
+#afos-mgk .gp-t{font-family:var(--fd);font-size:.88rem;font-weight:700;color:#fff;line-height:1.25;letter-spacing:-.01em;}
+#afos-mgk .gp-bd{padding:12px 14px;}
+#afos-mgk .gp-bd p{font-size:.78rem;color:var(--body);line-height:1.6;margin-bottom:7px;}
+#afos-mgk .gp-bd p:last-child{margin-bottom:0;}
+#afos-mgk .gp-tbl{width:100%;border-collapse:collapse;font-size:.7rem;margin:7px 0;}
+#afos-mgk .gp-tbl th{background:var(--navy);color:#fff;padding:5px 7px;text-align:left;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+#afos-mgk .gp-tbl td{padding:5px 7px;border-bottom:1px solid var(--bdr);color:var(--body);}
+#afos-mgk .gp-tbl tr:last-child td{border-bottom:none;}
+#afos-mgk .gp-tbl tr:nth-child(even) td{background:var(--bg2);}
+#afos-mgk .gp-blt{display:flex;gap:7px;padding:3px 0;font-size:.75rem;color:var(--body);line-height:1.5;align-items:flex-start;}
+#afos-mgk .gp-blt::before{content:'•';color:var(--or);font-weight:800;flex-shrink:0;margin-top:1px;}
+#afos-mgk .gp-ib{border-radius:6px;padding:8px 10px;font-size:.73rem;line-height:1.55;margin-top:7px;border:1px solid;}
+#afos-mgk .gp-ib.blue{background:var(--bl-lt);border-color:var(--bl-md);color:#1e40af;}
+#afos-mgk .gp-ib.grn{background:var(--gr-lt);border-color:var(--gr-md);color:#14532d;}
+#afos-mgk .gp-ib.red{background:var(--re-lt);border-color:#fecaca;color:#7f1d1d;}
+#afos-mgk .gp-ib.amb{background:var(--wa-lt);border-color:#fed7aa;color:#7c2d12;}
+
+/* white-label mockup */
+#afos-mgk .wl-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:36px;align-items:start;}
+#afos-mgk .wl-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:var(--mid);margin-bottom:10px;text-align:center;}
+#afos-mgk .mock-page{border-radius:12px;overflow:hidden;box-shadow:var(--sh-lg);}
+#afos-mgk .mock-cover{background:var(--navy);padding:28px 24px;position:relative;}
+#afos-mgk .mock-cover::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad);}
+#afos-mgk .mock-int{background:#fff;border:1px solid var(--bdr);}
+#afos-mgk .mock-int-hdr{padding:8px 14px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;background:var(--bg2);}
+#afos-mgk .mock-int-ftr{padding:7px 14px;border-top:1px solid var(--bdr);display:flex;justify-content:space-between;background:var(--bg2);}
+#afos-mgk .mock-callout{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:10px 13px;border-radius:8px;font-size:.82rem;line-height:1.55;}
+#afos-mgk .mock-callout.blue{background:var(--bl-lt);border:1px solid var(--bl-md);color:#1e40af;}
+#afos-mgk .mock-callout.amber{background:var(--wa-lt);border:1px solid #fed7aa;color:#7c2d12;}
+#afos-mgk .wl-fields{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:20px 22px;margin-top:0;}
+#afos-mgk .wl-field{background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:10px 13px;margin-bottom:7px;}
+#afos-mgk .wl-field-l{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:3px;}
+#afos-mgk .wl-field-v{font-size:.84rem;color:var(--ink);}
+#afos-mgk .wl-field-l.or{color:var(--or);}
+#afos-mgk .wl-field-l.bl{color:var(--bl);}
+#afos-mgk .wl-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:0;}
+
+/* ── PRICING ── */
+#afos-mgk .pricing{padding:80px 0;background:var(--bg2);}
+#afos-mgk .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;max-width:900px;margin-left:auto;margin-right:auto;}
+#afos-mgk .pcard{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;transition:box-shadow .15s;position:relative;}
+#afos-mgk .pcard:hover{box-shadow:var(--sh-md);}
+#afos-mgk .pcard.feat{border-color:var(--or);border-width:2px;}
+#afos-mgk .pcard.feat::before{content:'Most Popular';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--or);color:#fff;font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 14px;border-radius:100px;white-space:nowrap;}
+#afos-mgk .pcard.brand{border-color:var(--pur);border-width:2px;}
+#afos-mgk .pt{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:9px;}
+#afos-mgk .pcard.feat .pt{color:var(--or);}.pcard.brand .pt{color:var(--pur);}.pcard:not(.feat):not(.brand) .pt{color:var(--mid);}
+#afos-mgk .pamt{font-family:var(--fd);font-size:2.6rem;font-weight:800;color:var(--ink);letter-spacing:-.04em;line-height:1;margin-bottom:3px;}
+#afos-mgk .pamt sup{font-size:.9rem;font-weight:700;vertical-align:super;margin-right:2px;}
+#afos-mgk .pcad{font-size:.78rem;color:var(--mid);margin-bottom:18px;}
+#afos-mgk .pfeats{flex:1;display:flex;flex-direction:column;gap:6px;margin-bottom:20px;}
+#afos-mgk .pf{font-size:.86rem;color:var(--body);display:flex;align-items:flex-start;gap:7px;line-height:1.45;}
+#afos-mgk .pf::before{content:'✓';color:var(--grn);font-weight:800;flex-shrink:0;font-size:.8rem;margin-top:1px;}
+#afos-mgk .pf.no::before{content:'—';color:var(--faint);}.pf.no{color:var(--faint);}
+#afos-mgk .pf strong{color:var(--ink);}
+#afos-mgk .btn-buy{display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;font-family:var(--fb);font-size:.9rem;font-weight:700;border:none;border-radius:var(--rs);cursor:pointer;text-decoration:none;transition:background .14s,transform .12s;width:100%;}
+#afos-mgk .btn-buy:hover{transform:translateY(-1px);}
+#afos-mgk .bor{background:var(--or);color:#fff;box-shadow:0 3px 12px rgba(249,115,22,.28);}.bor:hover{background:var(--or-dk);}
+#afos-mgk .bpu{background:var(--pur);color:#fff;}.bpu:hover{background:#6d28d9;}
+#afos-mgk .bou{background:#fff;color:var(--ink);border:1.5px solid var(--bdr2);}.bou:hover{background:var(--bg2);transform:none;}
+#afos-mgk .guide-add{background:#fff;border:1.5px solid #fcd34d;border-radius:var(--r);padding:24px;margin-bottom:14px;}
+#afos-mgk .guide-add-row{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:start;}
+#afos-mgk .gf-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:10px;}
+#afos-mgk .gf{font-size:.84rem;color:var(--body);display:flex;align-items:flex-start;gap:6px;line-height:1.4;}
+#afos-mgk .gf::before{content:'✓';color:var(--grn);font-weight:800;flex-shrink:0;font-size:.78rem;}
+#afos-mgk .guide-price-box{text-align:center;padding:18px 20px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);min-width:175px;}
+#afos-mgk .bundle{background:var(--navy);border-radius:var(--rl);padding:32px 28px;position:relative;overflow:hidden;}
+#afos-mgk .bundle::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+#afos-mgk .bundle::after{content:'';position:absolute;top:-80px;right:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(29,107,243,.12),transparent 65%);pointer-events:none;}
+#afos-mgk .bundle-in{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;position:relative;z-index:1;}
+#afos-mgk .bundle-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(249,115,22,.18);border:1px solid rgba(249,115,22,.35);border-radius:100px;padding:4px 13px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#fdba74;margin-bottom:11px;}
+#afos-mgk .bundle-t{font-family:var(--fd);font-size:1.4rem;font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:7px;}
+#afos-mgk .bundle-s{font-size:.88rem;color:rgba(255,255,255,.58);line-height:1.65;margin-bottom:16px;max-width:520px;}
+#afos-mgk .bundle-feats{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:520px;}
+#afos-mgk .bf{font-size:.86rem;color:rgba(255,255,255,.75);display:flex;align-items:flex-start;gap:7px;line-height:1.4;}
+#afos-mgk .bf strong{color:#fff;}.bf::before{content:'✓';color:#4ade80;font-weight:800;flex-shrink:0;font-size:.8rem;}
+#afos-mgk .bundle-sav{font-size:.78rem;color:rgba(255,255,255,.38);margin-top:10px;}
+#afos-mgk .bundle-sav s{color:rgba(255,255,255,.28);}
+#afos-mgk .bundle-sav span{color:#4ade80;font-weight:700;margin-left:6px;}
+#afos-mgk .bprice-side{text-align:center;flex-shrink:0;}
+#afos-mgk .bpl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:4px;}
+#afos-mgk .bp{font-family:var(--fd);font-size:3rem;font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1;margin-bottom:2px;}
+#afos-mgk .bp sup{font-size:1.1rem;vertical-align:super;margin-right:2px;}
+#afos-mgk .bpc{font-size:.75rem;color:rgba(255,255,255,.42);margin-bottom:16px;}
+#afos-mgk .btn-ult{display:block;padding:14px 24px;background:var(--or);color:#fff;font-family:var(--fb);font-size:.95rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;text-decoration:none;text-align:center;white-space:nowrap;box-shadow:0 4px 18px rgba(249,115,22,.40);transition:background .14s,transform .12s;}
+#afos-mgk .btn-ult:hover{background:var(--or-dk);transform:translateY(-1px);}
+
+/* ── AUTH / FAQ ── */
+#afos-mgk .auth{padding:80px 0;background:var(--bg2);}
+#afos-mgk .auth-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:34px;max-width:680px;margin:0 auto;position:relative;overflow:hidden;}
+#afos-mgk .auth-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad);}
+#afos-mgk .auth-q{font-family:var(--fd);font-size:1.1rem;font-weight:600;color:var(--ink);line-height:1.5;letter-spacing:-.01em;margin-bottom:14px;}
+#afos-mgk .auth-who{font-size:.88rem;color:var(--mid);}
+#afos-mgk .auth-who strong{color:var(--ink);}
+#afos-mgk .faq-sec{padding:80px 0;}
+#afos-mgk details{border-bottom:1px solid var(--bdr);}
+#afos-mgk details:last-child{border-bottom:none;}
+#afos-mgk summary{padding:17px 0;font-size:1rem;font-weight:700;color:var(--ink);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;letter-spacing:-.01em;}
+#afos-mgk summary::-webkit-details-marker{display:none;}
+#afos-mgk summary::after{content:'+';font-size:1.2rem;color:var(--or);flex-shrink:0;}
+#afos-mgk details[open] summary::after{content:'−';}
+#afos-mgk .faq-a{font-size:.9rem;color:var(--mid);line-height:1.7;padding:0 0 16px;}
+
+/* ── FINAL CTA ── */
+#afos-mgk .fc-sec{padding:80px 0;}
+#afos-mgk .fc-in{background:var(--navy);border-radius:20px;padding:64px 40px;max-width:720px;margin:0 auto;text-align:center;position:relative;overflow:hidden;}
+#afos-mgk .fc-in::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+#afos-mgk .fc-glow{position:absolute;top:-100px;right:-100px;width:320px;height:320px;background:radial-gradient(circle,rgba(29,107,243,.10),transparent 65%);pointer-events:none;}
+#afos-mgk .fc-in img{height:38px;object-fit:contain;margin-bottom:24px;position:relative;z-index:1;}
+#afos-mgk .fc-t{font-family:var(--fd);font-size:clamp(1.7rem,4vw,2.5rem);font-weight:800;line-height:1.1;letter-spacing:-.035em;color:#fff;margin-bottom:12px;position:relative;z-index:1;}
+#afos-mgk .fc-s{font-size:1rem;color:rgba(255,255,255,.55);line-height:1.7;max-width:460px;margin:0 auto 28px;position:relative;z-index:1;}
+#afos-mgk .fc-ctas{display:flex;flex-direction:column;align-items:center;gap:11px;position:relative;z-index:1;}
+
+#afos-mgk footer{padding:28px 0;border-top:1px solid var(--bdr);background:var(--bg2);}
+#afos-mgk .foot-legal{font-size:.74rem;color:var(--faint);line-height:1.65;text-align:center;max-width:720px;margin:0 auto;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  #afos-mgk .feat-grid,.how-grid,.price-grid{grid-template-columns:1fr 1fr;}
+  #afos-mgk .snap-2c{grid-template-columns:1fr;}
+  #afos-mgk .pw-grid,.bundle-in{flex-direction:column;}
+  #afos-mgk .pw-grid{grid-template-columns:1fr 1fr;}
+  #afos-mgk .player-wrap{grid-template-columns:1fr;}
+  #afos-mgk .bundle-in{flex-direction:column;}
+  #afos-mgk .bprice-side{text-align:left;width:100%;}
+  #afos-mgk .guide-grid{grid-template-columns:1fr 1fr;}
+  #afos-mgk .gp:nth-child(3n){border-right:1px solid var(--bdr);}
+  #afos-mgk .gp:nth-child(2n){border-right:none;}
+  #afos-mgk .gp:nth-last-child(-n+3){border-bottom:1px solid var(--bdr);}
+  #afos-mgk .gp:nth-last-child(-n+2){border-bottom:none;}
+  #afos-mgk .wl-grid{grid-template-columns:1fr;}
+  #afos-mgk .guide-add-row{grid-template-columns:1fr;}
+}
+@media(max-width:640px){
+  #afos-mgk {font-size:16px;}
+  #afos-mgk .prob-grid{grid-template-columns:1fr;}
+  #afos-mgk .feat-grid,.how-grid,.pw-grid{grid-template-columns:1fr;}
+  #afos-mgk .price-grid{grid-template-columns:1fr;max-width:400px;margin-left:auto;margin-right:auto;}
+  #afos-mgk .nav-links .nl:not(.nav-cta){display:none;}
+  #afos-mgk .hero{padding:56px 0 0;}
+  #afos-mgk .si{padding:6px 14px;}
+  #afos-mgk .fc-in{padding:44px 22px;}
+  #afos-mgk .gf-grid{grid-template-columns:1fr;}
+  #afos-mgk .bundle-feats{grid-template-columns:1fr;}
+  #afos-mgk .guide-grid{grid-template-columns:1fr;}
+  #afos-mgk .gp{border-right:none!important;}
+  #afos-mgk .gp:not(:last-child){border-bottom:1px solid var(--bdr)!important;}
+  #afos-mgk .gp:last-child{border-bottom:none!important;}
+}
+
+/* GHL embed polish */
+#afos-mgk { width: 100%; max-width: 100%; overflow-x: clip; }
+#afos-mgk :where(a,button,input,select,summary):focus-visible {
+  outline: 2px solid var(--bl);
+  outline-offset: 2px;
+}
+#afos-mgk img { max-width: 100%; height: auto; }
+@media (prefers-reduced-motion: reduce) {
+  #afos-mgk, #afos-mgk * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+<main id="afos-mgk" class="afos-mgk-root" role="main">
+
+<!-- NAV -->
+<nav class="nav" aria-label="Primary">
+  <div class="nav-in">
+    <img src="https://assets.cdn.filesafe.space/aalZz3JfkmBWlXlpqvSa/media/69d0fe47849c507b529c66fc.png" class="nav-logo" alt="AgentFlowOS" onerror="this.style.display='none'">
+    <div class="nav-links">
+      <a href="#demo" class="nl">See Demo</a>
+      <a href="#guide-section" class="nl">The Guide</a>
+      <a href="#pricing" class="nl">Pricing</a>
+      <a href="#pricing" class="nav-cta nav-cta-muted">View plans →</a>
+    </div>
+  </div>
+</nav>
+
+<div id="afos-stripe-return" class="stripe-return" role="status" hidden>
+  <div class="stripe-return-in">
+    <span>You're back — checkout wasn't completed.</span>
+    <a href="#pricing">Pick Growth Kit ($697) or Ultimate ($1,397) below — upsells: $197 → $397</a>
+    <button type="button" class="stripe-return-x" id="afos-stripe-return-x" aria-label="Dismiss">×</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-in">
+      <img src="https://assets.cdn.filesafe.space/aalZz3JfkmBWlXlpqvSa/media/69d0fe47849c507b529c66fc.png" class="hero-logo" alt="Medicare Growth Kit" onerror="this.style.display='none'">
+      <div class="hero-pill"><div class="pill-dot"></div>Built by a Real Medicare Agent · Nothing Hidden</div>
+      <h1>Close More Medicare Clients<br>Without <em>Chasing Leads</em></h1>
+      <p class="hero-sub">AgentFlowOS gives you calculators, a branded Medicare guide, and a GHL snapshot that educates prospects and books appointments — automatically, while you sleep.</p>
+      <div class="hero-ctas">
+        <div class="hero-ctas-dual">
+          <a href="https://buy.stripe.com/3cIbJ1ea85xY1mC6fe6sw00" class="btn-hero afos-stripe-697">
+            Get Growth Kit — $697
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-hero btn-hero-ghost afos-stripe-ult">
+            Ultimate Bundle — $1,397
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <span class="hero-note">Two real checkout buttons above — <strong>$697</strong> then optional <strong>$197</strong> Branding → <strong>$397</strong> Guide (self-serve import into your GHL sub-account). <strong>$1,397</strong> Ultimate is everything in one checkout. Annual CMS updates free · No contracts</span>
+      </div>
+    </div>
+  </div>
+  <div class="sbar">
+    <div class="sbar-in">
+      <div class="si"><div class="si-n">$6,936</div><div class="si-l">Max IRMAA overpayment found</div></div>
+      <div class="si"><div class="si-n">3</div><div class="si-l">Live lead tools included</div></div>
+      <div class="si"><div class="si-n">GHL</div><div class="si-l">Snapshot — 2-click import</div></div>
+      <div class="si"><div class="si-n">25</div><div class="si-l">Page Medicare guide PDF</div></div>
+      <div class="si"><div class="si-n">∞</div><div class="si-l">Annual updates, free</div></div>
+      <div class="si"><div class="si-n">$1,397</div><div class="si-l">Ultimate · all-in</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="prob">
+  <div class="wrap-md">
+    <div class="tag blue">The Problem</div>
+    <h2 class="sh">Most Medicare Agents Are Losing Deals Because…</h2>
+    <div class="prob-grid">
+      <div class="pc"><span class="pc-ico">😵</span><div class="pc-t">Prospects are confused and overwhelmed</div><div class="pc-b">Parts A, B, C, D, IRMAA surcharges, Part D penalties — most give up before they ever book.</div></div>
+      <div class="pc"><span class="pc-ico">⏰</span><div class="pc-t">You spend hours explaining the basics</div><div class="pc-b">Every appointment starts at zero. You're a Medicare educator before you're an agent — that doesn't scale.</div></div>
+      <div class="pc"><span class="pc-ico">📉</span><div class="pc-t">Leads don't follow through</div><div class="pc-b">They say they'll call back. They don't. Without automated follow-up, you leave money in your CRM.</div></div>
+      <div class="pc"><span class="pc-ico">🔁</span><div class="pc-t">No consistent system to book appointments</div><div class="pc-b">Your results depend on how hard you personally worked that week. A real business runs when you're not in the room.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO — PATHWAY PLAYER -->
+<section class="demos" id="demo">
+  <div class="wrap">
+    <div class="ctr" style="margin-bottom:32px;">
+      <div class="tag">Live Demo · Try It Now</div>
+      <h2 class="sh">Pick a Pathway.<br>Watch What It Generates.</h2>
+      <p class="ss ctr">Choose any Medicare situation below, hit ▶ Play Through, and watch the entire flow — from the first question to the branded report — exactly as your prospect experiences it. See every GHL field, tag, and SMS fire in real time on the right.</p>
+    </div>
+
+    <!-- 4 Pathway Buttons -->
+    <div class="pw-grid">
+      <button type="button" class="pw-btn active" id="pw-0" data-afos-pw="0" aria-pressed="true"><span class="pw-ico">🎂</span><div class="pw-lbl">New to Medicare</div><div class="pw-sub">Turning 65 soon or just eligible</div></button>
+      <button type="button" class="pw-btn" id="pw-1" data-afos-pw="1" aria-pressed="false"><span class="pw-ico">🔄</span><div class="pw-lbl">Already on Medicare</div><div class="pw-sub">Review coverage or lower costs</div></button>
+      <button type="button" class="pw-btn" id="pw-2" data-afos-pw="2" aria-pressed="false"><span class="pw-ico">💼</span><div class="pw-lbl">Employer Coverage</div><div class="pw-sub">Deciding when to transition</div></button>
+      <button type="button" class="pw-btn" id="pw-3" data-afos-pw="3" aria-pressed="false"><span class="pw-ico">⚕️</span><div class="pw-lbl">Medicare via Disability</div><div class="pw-sub">SSDI, under 65</div></button>
+    </div>
+
+    <div class="player-wrap">
+      <!-- LEFT: browser sim -->
+      <div>
+        <div class="col-lbl">What your prospect experiences ↓</div>
+        <div class="sim-brow">
+          <div class="sim-bar"><div class="bd" style="background:#f87171;"></div><div class="bd" style="background:#fbbf24;"></div><div class="bd" style="background:#34d399;"></div><div class="burl" id="sim-url">youragency.com/medicare-report</div></div>
+          <div class="sim-body">
+            <div class="ag-strip"><div class="ag-av">YA</div><div><div class="ag-nm">Your Agency Name</div><div class="ag-tt">Licensed Medicare Specialist</div></div><div class="ag-on">● Available Now</div></div>
+            <div class="sim-prog"><div class="sim-pf" id="sim-pf" style="width:14%;"></div></div>
+
+            <!-- Step: Questions (Q1) -->
+            <div class="sim-step active" id="ss0">
+              <div class="sim-tag" id="ss0-tag">Getting Started · Step 1 of 6</div>
+              <div class="sim-q" id="ss0-q">Where are you in your Medicare journey?</div>
+              <div class="sim-hint" id="ss0-h">Your answer shapes every question and recommendation in your report.</div>
+              <div class="sim-opts" id="ss0-opts"></div>
+              <div class="sim-next blue" id="ss0-next"></div>
+            </div>
+
+            <!-- Step: Q2 -->
+            <div class="sim-step" id="ss1">
+              <div class="sim-tag" id="ss1-tag"></div>
+              <div class="sim-q" id="ss1-q"></div>
+              <div class="sim-hint" id="ss1-h"></div>
+              <div class="sim-opts" id="ss1-opts"></div>
+              <div class="sim-next blue" id="ss1-next"></div>
+            </div>
+
+            <!-- Step: IRMAA income -->
+            <div class="sim-step" id="ss2">
+              <div class="sim-tag" id="ss2-tag">New to Medicare · Step 5 of 6</div>
+              <div class="sim-q">What was your 2024 household income?</div>
+              <div class="sim-hint">Higher earners pay $81–$487/month extra in Medicare surcharges. This calculates yours instantly.</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px;">
+                <div><div style="font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--body);margin-bottom:4px;">Filing Status</div><select style="width:100%;padding:8px 10px;font-family:var(--fb);font-size:.82rem;background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:7px;outline:none;-webkit-appearance:none;"><option>Single / Head of HH</option><option>Married Filing Jointly</option><option>Married Filing Separately</option></select></div>
+                <div><div style="font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--body);margin-bottom:4px;">2024 MAGI</div><input style="width:100%;padding:8px 10px;font-family:var(--fb);font-size:.82rem;background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:7px;outline:none;" value="$145,000" readonly></div>
+              </div>
+              <div class="sim-next red show" style="opacity:1;transform:none;">⚠️ <strong style="color:var(--red);">IRMAA Tier 2 detected</strong> — $2,886/year above the standard rate. Full breakdown + SSA-44 appeal guide appear in your report.</div>
+            </div>
+
+            <!-- Step: Lead gate -->
+            <div class="sim-step" id="ss3">
+              <div style="background:var(--gr-lt);border:1.5px solid var(--gr-md);border-radius:8px;padding:9px 13px;text-align:center;margin-bottom:10px;"><div style="font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:var(--grn);margin-bottom:2px;">✅ Your Report Is Ready</div><div style="font-family:var(--fd);font-size:.9rem;font-weight:700;color:var(--ink);">Where should we send it?</div></div>
+              <div class="gate-tiles">
+                <div class="gate-tile"><div class="gate-tile-l">Enrollment Timeline</div><div class="gate-tile-v grn">Generated ✓</div></div>
+                <div class="gate-tile gate-locked"><div class="gate-tile-l">IRMAA Overpayment</div><div class="gate-tile-v red">$2,886/yr</div></div>
+                <div class="gate-tile gate-locked"><div class="gate-tile-l">Key Risk</div><div class="gate-tile-v">Identified</div></div>
+                <div class="gate-tile gate-locked"><div class="gate-tile-l">3-Step Roadmap</div><div class="gate-tile-v">Ready</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;"><input style="padding:9px 11px;font-family:var(--fb);font-size:.82rem;background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:7px;width:100%;" placeholder="First Name" readonly><input style="padding:9px 11px;font-family:var(--fb);font-size:.82rem;background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:7px;width:100%;" placeholder="Last Name" readonly></div>
+              <div style="margin-bottom:7px;"><input style="width:100%;padding:9px 11px;font-family:var(--fb);font-size:.82rem;background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:7px;" placeholder="Email Address" readonly></div>
+              <div style="margin-bottom:10px;"><input style="width:100%;padding:9px 11px;font-family:var(--fb);font-size:.82rem;background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:7px;" placeholder="Mobile Phone" readonly></div>
+              <div style="background:var(--bl);color:#fff;font-family:var(--fb);font-size:.9rem;font-weight:700;padding:11px;border-radius:7px;text-align:center;">Unlock My Medicare Clarity Report →</div>
+            </div>
+
+            <!-- Step: Generating -->
+            <div class="sim-step" id="ss4">
+              <div class="gen-box"><div class="gen-spin"></div>Generating your personalized Medicare report…</div>
+              <div style="font-size:.74rem;color:var(--mid);margin-top:10px;line-height:1.65;">Building enrollment timeline · Calculating IRMAA · Assessing risk · Writing to GHL · Sending SMS…</div>
+            </div>
+
+            <!-- Step: Full report -->
+            <div class="sim-step" id="ss5">
+              <div class="ic-grid" id="sim-ic" style="margin-bottom:8px;"></div>
+              <div style="background:#fff;border:1.5px solid var(--bdr);border-radius:9px;overflow:hidden;margin-bottom:7px;" id="sim-tl">
+                <div style="padding:9px 12px;border-bottom:1.5px solid var(--bdr);background:var(--bg2);"><div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:var(--mid);">Enrollment Timeline</div></div>
+                <div style="padding:10px 12px;" id="sim-tl-body"></div>
+              </div>
+              <div class="rep-cta"><div class="rca-tag">Ready to Act?</div><div class="rca-ttl">Get clarity in 30 minutes — free.</div><div class="rca-sub">Your agent reviews your report personally. No pressure, no agenda.</div><a class="rca-btn">📅 Book Your Free Review</a></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="player-ctrls">
+          <button type="button" class="ctrl ctrl-play" id="play-btn" data-afos-action="play">▶ Play Through</button>
+          <button type="button" class="ctrl ctrl-step" data-afos-action="step">Next Step →</button>
+          <button type="button" class="ctrl ctrl-rst" data-afos-action="reset">↺ Restart</button>
+          <span class="ctrl-stat" id="ctrl-stat">Step 1 of 6</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: GHL output -->
+      <div>
+        <div class="col-lbl">What gets generated &amp; sent to GHL ↓</div>
+        <div id="rp-out"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="feats">
+  <div class="wrap">
+    <div class="tag">What's Included</div>
+    <h2 class="sh">Everything You Need.<br>Nothing You Don't.</h2>
+    <p class="ss">Six production-ready tools — each engineered to do a specific job in your Medicare sales process.</p>
+    <div class="feat-grid">
+      <div class="fc"><span class="fc-ico">📋</span><div class="fc-name">Medicare Clarity Report</div><div class="fc-desc">4-pathway assessment with enrollment timeline, IRMAA estimate, risk score, and 3-step roadmap. Prospects arrive pre-educated and ready to book.</div><span class="fc-badge fb-a">Dark + Light included</span></div>
+      <div class="fc"><span class="fc-ico">💰</span><div class="fc-name">IRMAA Lead Magnet</div><div class="fc-desc">Standalone IRMAA calculator — shows exactly how much they're overpaying. All 3 filing statuses including Married Filing Separately with correct Tier 4 jump.</div><span class="fc-badge fb-a">Dark + Light included</span></div>
+      <div class="fc"><span class="fc-ico">💊</span><div class="fc-name">Part D Penalty Tool</div><div class="fc-desc">Interactive slider calculates the permanent lifetime penalty. Give away free or embed on your site — creates immediate urgency and a clear reason to call.</div><span class="fc-badge fb-a">Dark + Light included</span></div>
+      <div class="fc"><span class="fc-ico">⚙️</span><div class="fc-name">GHL Snapshot</div><div class="fc-desc">Import into GHL in 2 clicks. Creates all custom fields, tags, pipelines, workflows, and the inbound webhook automatically. No webhook URL hunting.</div><span class="fc-badge fb-s">Snapshot included</span></div>
+      <div class="fc"><span class="fc-ico">🤖</span><div class="fc-name">Automated Follow-Up</div><div class="fc-desc">SMS + email sequences fire the moment a prospect submits. Pathway-specific messaging and annual AEP automation built in and ready to go.</div><span class="fc-badge fb-s">Snapshot included</span></div>
+      <div class="fc"><span class="fc-ico">📘</span><div class="fc-name">25-Page Medicare Guide</div><div class="fc-desc">White-label patient education PDF covering all Medicare topics plus every ancillary cross-sell product. Branded to your agency. Updated annually free.</div><span class="fc-badge fb-u">Ultimate Bundle</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SNAPSHOT -->
+<section class="snap">
+  <div class="wrap">
+    <div class="snap-card">
+      <div class="snap-2c">
+        <div>
+          <div class="tag blue">GHL Snapshot</div>
+          <h2 class="sh" style="font-size:clamp(1.5rem,3vw,2rem);margin-bottom:10px;">Your Entire System<br>Installs in 2 Clicks</h2>
+          <p style="font-size:.95rem;color:var(--mid);line-height:1.7;">No webhook URL, no custom fields setup, no workflow building. Import the snapshot — everything creates itself automatically in your GHL account the moment you import.</p>
+        </div>
+        <div class="snap-grid">
+          <div class="sg"><div class="sg-ico">📋</div><div class="sg-t">12 Custom Contact Fields</div><div class="sg-b">Pathway, IRMAA tier, monthly surcharge, annual amount, birth month/year, SS status, employer size, plan priority — pre-built.</div></div>
+          <div class="sg"><div class="sg-ico">🏷</div><div class="sg-t">Contact Tags by Pathway</div><div class="sg-b">New to Medicare, IRMAA Surcharge, Part D Penalty, Employer Transition, URGENT — auto-applied on form submit.</div></div>
+          <div class="sg"><div class="sg-ico">📱</div><div class="sg-t">SMS + Email Sequences</div><div class="sg-b">2-minute follow-up SMS. 4-hour check-in. 24-hour nurture. Templates pre-written, pathway-specific.</div></div>
+          <div class="sg"><div class="sg-ico">📅</div><div class="sg-t">Annual AEP Automation</div><div class="sg-b">Fires September 1 every year — re-engages every past contact automatically through December 7.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="wrap">
+    <div class="ctr"><div class="tag">How It Works</div><h2 class="sh">Live in Under an Hour</h2><p class="ss ctr">No developers. No complex integrations. If you can paste text, you can deploy this system.</p></div>
+    <div class="how-grid">
+      <div><div class="hw-n">1</div><div class="hw-t">Buy &amp; fill 7-field intake</div><div class="hw-b">Instant access. Name, agency, phone, booking link, theme choice. 4 minutes. No webhook URL needed.</div></div>
+      <div><div class="hw-n">2</div><div class="hw-t">Download your package</div><div class="hw-b">Dark AND Light versions of all tools configured with your info — download as a ZIP instantly.</div></div>
+      <div><div class="hw-n">3</div><div class="hw-t">Import GHL snapshot</div><div class="hw-b">2 clicks in GHL. All custom fields, tags, pipelines, workflows, and webhook created automatically.</div></div>
+      <div><div class="hw-n">4</div><div class="hw-t">Drive traffic &amp; book</div><div class="hw-b">Send prospects through your tools. GHL handles every follow-up. You wake up to booked appointments.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI -->
+<section class="roi">
+  <div class="wrap">
+    <div class="roi-card">
+      <div class="roi-n">1</div>
+      <div class="roi-t">Close One Client.<br>This Pays for Itself.</div>
+      <div class="roi-b">The average Medicare commission is $500–$900/year per client. A single annual enrollment covers your entire investment. Every client after that is pure profit. The tools keep working after you close your laptop.</div>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDE SECTION -->
+<section class="guide-sec" id="guide-section">
+  <div class="wrap">
+    <div class="ctr" style="margin-bottom:32px;">
+      <div class="tag">📘 Add-On — $397 · Annual Updates Free Forever</div>
+      <h2 class="sh">25-Page White-Label<br>Medicare Complete Guide</h2>
+      <p class="ss ctr">Every section below is actual content from the guide — not a description of it. Branded to your agency name, logo, phone, and booking link on every page.</p>
+      <p style="font-size:.9rem;color:var(--mid);max-width:520px;margin:0 auto 16px;line-height:1.65;">The Guide ($397) is <strong>not</strong> sold on this page. After Growth Kit you’ll see <strong>Branding ($197)</strong>, then <strong>Upgrade Your System</strong> — the 25-page PDF on the last upsell step. (We removed the old done-for-you install — most agencies use GHL sub-accounts and import the snapshot themselves.)</p>
+      <a href="#pricing" class="btn-hero" style="margin-bottom:0;">Get Growth Kit first — $697<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <p style="font-size:.84rem;color:var(--faint);margin-top:12px;">Or <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="afos-stripe-ult" style="color:var(--or);font-weight:700;">Ultimate Bundle ($1,397)</a> includes everything · No separate Guide upsell needed</p>
+    </div>
+
+    <!-- WHITE-LABEL EXAMPLE -->
+    <div style="margin-bottom:44px;">
+      <div style="text-align:center;margin-bottom:18px;">
+        <div style="display:inline-block;background:var(--bl-lt);border:1px solid var(--bl-md);border-radius:100px;padding:5px 16px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:var(--bl);">White-Label Example — This Is What Your Clients Receive</div>
+      </div>
+      <div class="wl-grid">
+        <!-- Cover mockup -->
+        <div>
+          <div class="wl-label">Cover Page — Branded to You</div>
+          <div class="mock-page">
+            <div class="mock-cover">
+              <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:100px;padding:4px 12px;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:20px;">2026 Edition · Updated Annually</div>
+              <div style="font-family:var(--fd);font-size:.85rem;font-weight:400;color:rgba(255,255,255,.55);margin-bottom:5px;">Your Complete Guide to</div>
+              <div style="font-family:var(--fd);font-size:1.6rem;font-weight:800;color:#fff;line-height:1.1;letter-spacing:-.03em;margin-bottom:12px;">Medicare &amp;<br>Retirement Planning</div>
+              <div style="font-size:.7rem;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:18px;">Parts A–D · IRMAA · Supplement vs. Advantage · Annuities · Long-Term Care · Dental · Life Insurance · Final Expense</div>
+              <div style="height:1px;background:rgba(255,255,255,.15);margin-bottom:16px;"></div>
+              <!-- AGENT BRANDING HERE -->
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--or),#fbbf24);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#fff;flex-shrink:0;">SJ</div>
+                <div>
+                  <div style="font-family:var(--fd);font-size:.82rem;font-weight:700;color:#fff;">Sarah Johnson</div>
+                  <div style="font-size:.62rem;color:rgba(255,255,255,.45);">Licensed Medicare Specialist</div>
+                </div>
+              </div>
+              <div style="font-size:.62rem;color:rgba(255,255,255,.38);line-height:1.7;">Johnson Medicare Advisors · Austin, TX<br>(512) 555-0100 · austinmedicare.com<br>Licensed: TX, CO, NM</div>
+            </div>
+          </div>
+          <div class="mock-callout amber" style="margin-top:10px;">
+            <span style="font-size:1rem;flex-shrink:0;">👆</span>
+            <div><strong>Your photo, name, agency, phone, city, and licensed states</strong> replace the sample info above. Your brand color replaces the orange gradient on the top stripe.</div>
+          </div>
+        </div>
+
+        <!-- Interior page mockup + field list -->
+        <div>
+          <div class="wl-label">Interior Pages — Your Info on Every Page</div>
+          <div class="mock-page mock-int">
+            <div class="mock-int-hdr"><span style="font-size:.62rem;color:var(--mid);">Medicare Complete Guide 2026</span><span style="font-size:.62rem;color:var(--mid);">Johnson Medicare Advisors</span></div>
+            <div style="background:var(--navy);padding:10px 14px;"><div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#fdba74;margin-bottom:2px;">Section 6</div><div style="font-family:var(--fd);font-size:.88rem;font-weight:700;color:#fff;">IRMAA: Income Surcharges</div></div>
+            <div style="padding:12px 14px;">
+              <div style="font-size:.72rem;color:var(--body);line-height:1.6;margin-bottom:8px;">Higher-income beneficiaries pay an extra surcharge based on income from <strong>2 years prior</strong> — your 2026 surcharge = your 2024 MAGI.</div>
+              <table style="width:100%;border-collapse:collapse;font-size:.63rem;margin-bottom:8px;"><tr style="background:var(--navy);"><th style="padding:4px 6px;color:#fff;font-weight:700;text-align:left;">2024 Single MAGI</th><th style="padding:4px 6px;color:#fff;font-weight:700;">Part B +</th><th style="padding:4px 6px;color:#fff;font-weight:700;">Annual +</th></tr><tr><td style="padding:4px 6px;border-bottom:1px solid var(--bdr);color:#16a34a;font-weight:700;">≤ $109,000</td><td style="padding:4px 6px;border-bottom:1px solid var(--bdr);color:#16a34a;">$0</td><td style="padding:4px 6px;border-bottom:1px solid var(--bdr);color:#16a34a;">$0</td></tr><tr style="background:var(--bg2);"><td style="padding:4px 6px;border-bottom:1px solid var(--bdr);">$137K–$171K</td><td style="padding:4px 6px;border-bottom:1px solid var(--bdr);">$202.90</td><td style="padding:4px 6px;border-bottom:1px solid var(--bdr);">$2,886</td></tr><tr><td style="padding:4px 6px;color:#dc2626;font-weight:700;">&gt;$500,000</td><td style="padding:4px 6px;color:#dc2626;">$487.00</td><td style="padding:4px 6px;color:#dc2626;">$6,936</td></tr></table>
+              <div style="background:var(--navy);border-radius:7px;padding:10px 12px;text-align:center;"><div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:#60a5fa;margin-bottom:3px;">Questions about your IRMAA?</div><div style="font-family:var(--fd);font-size:.75rem;font-weight:700;color:#fff;margin-bottom:3px;">Get clarity in 30 minutes — free.</div><div style="font-size:.6rem;color:rgba(255,255,255,.45);">Sarah Johnson · (512) 555-0100 · austinmedicare.com/book</div></div>
+            </div>
+            <div class="mock-int-ftr"><span style="font-size:.6rem;color:var(--faint);">Johnson Medicare Advisors · (512) 555-0100 · austinmedicare.com</span><span style="font-size:.6rem;color:var(--faint);">Page 8 of 25</span></div>
+          </div>
+          <div class="mock-callout blue" style="margin-top:10px;">
+            <span style="font-size:1rem;flex-shrink:0;">👆</span>
+            <div><strong>Every interior page has your agency name, phone, and website in the header and footer.</strong> Each section ends with your booking link and "get clarity in 30 minutes" CTA.</div>
+          </div>
+
+          <!-- What gets replaced -->
+          <div class="wl-fields" style="margin-top:12px;">
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--mid);margin-bottom:10px;">What gets swapped out — nothing else to configure:</div>
+            <div class="wl-field-grid">
+              <div class="wl-field"><div class="wl-field-l or">Your Name</div><div class="wl-field-v">Sarah Johnson → <strong>You</strong></div></div>
+              <div class="wl-field"><div class="wl-field-l or">Agency Name</div><div class="wl-field-v">Johnson Advisors → <strong>Yours</strong></div></div>
+              <div class="wl-field"><div class="wl-field-l bl">Phone Number</div><div class="wl-field-v">(512) 555-0100 → <strong>Yours</strong></div></div>
+              <div class="wl-field"><div class="wl-field-l bl">Website + Booking</div><div class="wl-field-v">austinmedicare.com → <strong>Yours</strong></div></div>
+              <div class="wl-field"><div class="wl-field-l or">Licensed States</div><div class="wl-field-v">TX, CO, NM → <strong>Yours</strong></div></div>
+              <div class="wl-field"><div class="wl-field-l bl">Brand Color + Photo</div><div class="wl-field-v">Orange gradient → <strong>Your Color</strong></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- wl example -->
+
+    <!-- ALL 17 SECTIONS -->
+    <h3 style="font-family:var(--fd);font-size:1.2rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:18px;text-align:center;">All 17 Sections — Actual Content, Not Descriptions</h3>
+    <div class="guide-label-bar">
+      <div><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:5px;">📘 Add-On — $397 · Annual Updates Free Forever</div><div style="font-family:var(--fd);font-size:1.15rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;">25-Page White-Label Medicare Complete Guide</div><div style="font-size:.88rem;color:var(--mid);margin-top:4px;">Scroll through all 17 sections below — this is the real content, branded to your agency.</div></div>
+      <div class="guide-price-box">
+        <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:4px;">Add-On</div>
+        <div style="font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--ink);letter-spacing:-.04em;line-height:1;margin-bottom:2px;"><sup style="font-size:.85rem;vertical-align:super;">$</sup>397</div>
+        <div style="font-size:.75rem;color:var(--mid);margin-bottom:12px;">free updates forever</div>
+        <p style="font-size:.78rem;color:var(--mid);line-height:1.5;margin:0;padding:10px 12px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);text-align:center;">Add on <strong>last upsell step</strong> ($397 after $197 Branding) — not here.</p>
+      </div>
+    </div>
+    <div class="guide-grid">
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 1</div><div class="gp-t">Medicare 101: The Four Parts</div></div><div class="gp-bd"><p>Medicare is the federal health insurance program for Americans 65+ and certain people under 65 with qualifying disabilities.</p><table class="gp-tbl"><tr><th>Part</th><th>Covers</th><th>2026 Cost</th></tr><tr><td><strong>A — Hospital</strong></td><td>Inpatient, SNF, hospice</td><td>$0/mo. Ded: $1,736</td></tr><tr><td><strong>B — Medical</strong></td><td>Doctors, outpatient, DME</td><td>$202.90/mo. $283 ded.</td></tr><tr><td><strong>C — Advantage</strong></td><td>Bundles A+B+D privately</td><td>Often $0. MOOP $9,350</td></tr><tr><td><strong>D — Drugs</strong></td><td>Prescription coverage</td><td>Avg $38.99/mo. Cap $2K</td></tr></table><div class="gp-ib red">⚠️ <strong>The 20% Problem:</strong> Part B pays 80% — you pay 20% with NO annual cap. A $500K cancer treatment = $100K personal liability.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 2</div><div class="gp-t">Enrollment Windows &amp; Timelines</div></div><div class="gp-bd"><p>Strict windows with <strong>permanent consequences</strong> for missing them. Penalties are added every month for the rest of your Medicare life.</p><div class="gp-blt"><strong>IEP (7-month):</strong> 3 months before, birthday month, 3 months after 65. Miss it = 10% Part B penalty per year late — forever.</div><div class="gp-blt"><strong>Medigap OE (One-Time Only):</strong> 6 months after Part B. Guaranteed issue. Irreplaceable.</div><div class="gp-blt"><strong>SEP:</strong> 8 months after active employer coverage ends. 63 days for Part D.</div><div class="gp-blt"><strong>AEP:</strong> Oct 15–Dec 7. Switch Advantage or Part D plans.</div><div class="gp-ib amb">🚨 <strong>COBRA Trap:</strong> NOT creditable for Part D. Penalty clock starts from active employer coverage end — not COBRA end.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 3</div><div class="gp-t">Medicare Supplement (Medigap)</div></div><div class="gp-bd"><p>Supplement plans fill Medicare's gaps. Benefits are <strong>standardized by federal law</strong> — every carrier offers identical coverage for each plan letter. Only the price differs.</p><table class="gp-tbl"><tr><th>Plan G</th><th>Plan N</th></tr><tr><td>100% Part B coinsurance (after $283 ded.)</td><td>100% coinsurance (small copays)</td></tr><tr><td>Part A deductible ($1,736) covered</td><td>Part A deductible covered</td></tr><tr><td style="color:#dc2626;">Does NOT cover Part B deductible</td><td style="color:#dc2626;">Does NOT cover excess charges</td></tr></table><div class="gp-ib grn">💡 Same Plan G can vary 20–50% in premium between carriers in the same ZIP. An independent agent compares every carrier.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 4</div><div class="gp-t">Medicare Advantage (Part C)</div></div><div class="gp-bd"><p>Bundles A, B, and usually D through private insurers. Often $0 premium with dental, vision, and hearing benefits. Trade-off: networks and prior authorizations.</p><table class="gp-tbl"><tr><th>Factor</th><th>Advantage</th><th>Supplement</th></tr><tr><td>Premium</td><td style="color:#16a34a;">Often $0</td><td>$80–$250+</td></tr><tr><td>Networks</td><td style="color:#dc2626;">HMO or PPO</td><td style="color:#16a34a;">Any provider</td></tr><tr><td>OOP Max</td><td>Up to $9,350</td><td style="color:#16a34a;">Plan G: $283/yr</td></tr><tr><td>Prior Auth</td><td style="color:#dc2626;">Common</td><td style="color:#16a34a;">None</td></tr></table><div class="gp-ib amb">⚠️ Plans can change benefits, networks, and formularies every October 1. Annual reviews with a licensed agent are essential.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 5</div><div class="gp-t">Part D: Prescription Drug Coverage</div></div><div class="gp-bd"><p>Part D covers drugs through tiered formularies. Late enrollment penalty: <strong>1% × $38.99 × months uncovered, rounded to nearest $0.10 — permanent.</strong></p><table class="gp-tbl"><tr><th>Tier</th><th>Drug Type</th><th>Cost</th></tr><tr><td>1 — Pref. Generic</td><td>Common generics</td><td style="color:#16a34a;">$0–$5</td></tr><tr><td>2 — Generic</td><td>Standard generics</td><td style="color:#16a34a;">$5–$20</td></tr><tr><td>3 — Pref. Brand</td><td>Common brand-name</td><td>$30–$60</td></tr><tr><td>5 — Specialty</td><td>Biologics, oncology</td><td style="color:#dc2626;">25–33%</td></tr></table><div class="gp-ib red">24 months = $9.40/mo forever. 60 months = $23.40/mo. Enroll even with no prescriptions.</div><div class="gp-ib grn">2025+: $2,000 annual OOP cap — catastrophic gap eliminated.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 6</div><div class="gp-t">IRMAA: Income Surcharges</div></div><div class="gp-bd"><p>Extra charge on Part B and Part D for higher-income beneficiaries. Based on income <strong>2 years prior</strong> — 2026 surcharge = 2024 MAGI.</p><table class="gp-tbl"><tr><th>2024 Single MAGI</th><th>Part B +</th><th>Annual +</th></tr><tr><td>≤ $109,000</td><td style="color:#16a34a;">$0</td><td style="color:#16a34a;">$0</td></tr><tr><td>$109K–$137K</td><td>$81.20</td><td>$1,149</td></tr><tr><td>$137K–$171K</td><td>$202.90</td><td>$2,886</td></tr><tr><td>$171K–$205K</td><td style="color:#dc2626;">$324.60</td><td style="color:#dc2626;">$4,620</td></tr><tr><td>&gt; $500,000</td><td style="color:#dc2626;">$487.00</td><td style="color:#dc2626;">$6,936</td></tr></table><div class="gp-ib blue">SSA-44 Appeal: Retirement, reduced hours, or death of spouse = appeal using more recent, lower income — often effective immediately.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 7</div><div class="gp-t">Medicare &amp; Working Americans</div></div><div class="gp-bd"><p>Employer size is the single most critical Medicare question for active workers. Getting it wrong = permanent penalties.</p><table class="gp-tbl"><tr><th>Employer Size</th><th>Medicare</th><th>Action</th></tr><tr><td>Under 20 employees</td><td style="color:#dc2626;">PRIMARY</td><td>Enroll at 65 regardless</td></tr><tr><td>20+ employees</td><td style="color:#16a34a;">SECONDARY</td><td>May delay penalty-free</td></tr></table><div class="gp-blt"><strong>HSA Conflict:</strong> Stop contributions 6 months before Medicare enrollment.</div><div class="gp-blt"><strong>COBRA Trap:</strong> NOT creditable for Part D. 63-day clock starts from active employer coverage end.</div><div class="gp-ib amb">Day employer coverage ends: SEP (8 months Part B) + 63-day Part D clock — both start simultaneously.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 8</div><div class="gp-t">Annuities: Guaranteed Income</div></div><div class="gp-bd"><p>Medicare handles healthcare costs. Annuities solve the income problem — <strong>guaranteed income that cannot run out</strong> no matter how long you live.</p><table class="gp-tbl"><tr><th>Type</th><th>How It Works</th><th>Best For</th></tr><tr><td><strong>MYGA</strong></td><td>Guaranteed rate 4–6%+</td><td>Safe money, CD alternative</td></tr><tr><td><strong>FIA</strong></td><td>Index-linked, 0% floor</td><td>Growth without downside</td></tr><tr><td><strong>GLWB</strong></td><td>Lifetime income rider</td><td>Cannot outlive payments</td></tr><tr><td><strong>SPIA</strong></td><td>Immediate lifetime income</td><td>Income needed now</td></tr></table><div class="gp-ib blue">💡 SS Bridge: MYGA bridges income 65→70, delay SS to 70 (8%/yr credit). Often generates $200,000+ in additional lifetime SS income.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 9</div><div class="gp-t">Long-Term Care: The Gap Medicare Won't Cover</div></div><div class="gp-bd"><p>Medicare does <strong>NOT</strong> cover custodial care. 70% of Americans will need it. Medicare covers max 100 SNF days after a qualifying hospital stay.</p><table class="gp-tbl"><tr><th>Care Type</th><th>Annual Cost</th></tr><tr><td>Private nursing home</td><td style="color:#dc2626;">$115,000+/yr</td></tr><tr><td>Assisted living</td><td style="color:#dc2626;">$68,000/yr</td></tr><tr><td>In-home aide (44 hrs/wk)</td><td style="color:#dc2626;">$75,000/yr</td></tr></table><div class="gp-blt"><strong>Hybrid LTC/Life (most popular):</strong> Single premium, 2–4× LTC benefit, death benefit if unused.</div><div class="gp-ib grn">Deposit $75K–$150K, get 2–4× in LTC benefits. Unused = death benefit to heirs. Solves use-it-or-lose-it.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 10</div><div class="gp-t">Dental, Vision &amp; Hearing</div></div><div class="gp-bd"><p>Original Medicare covers <strong>virtually none</strong> of these — representing $3,000–$10,000+ in annual out-of-pocket costs.</p><table class="gp-tbl"><tr><th>Need</th><th>Typical Cost</th><th>Medicare</th></tr><tr><td>Dental cleanings/yr</td><td>$300–$500</td><td style="color:#dc2626;">$0</td></tr><tr><td>Single crown</td><td>$1,000–$1,800</td><td style="color:#dc2626;">$0</td></tr><tr><td>Hearing aids (pair)</td><td>$2,000–$7,000</td><td style="color:#dc2626;">$0</td></tr><tr><td>Vision exam + glasses</td><td>$200–$600</td><td style="color:#dc2626;">$0</td></tr></table><div class="gp-ib blue">Solutions: Standalone dental ($30–$65/mo) · MA plan with D/V/H · OTC hearing aids (FDA-approved, $200–$1,500)</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 11</div><div class="gp-t">Hospital Indemnity &amp; Critical Illness</div></div><div class="gp-bd"><p>Cash-pay products that pay <strong>directly to you</strong> — not a provider. No network restrictions.</p><div class="gp-blt"><strong>Hospital Indemnity:</strong> $250–$400/day per hospital day. Offsets MA copays. $40–$100/mo.</div><div class="gp-blt"><strong>Critical Illness:</strong> $10K–$50K lump sum on diagnosis of heart attack, stroke, cancer, kidney failure, or organ transplant. $30–$65/mo.</div><div class="gp-blt"><strong>Accident:</strong> ER visits, fractures, ambulance. $15–$35/mo.</div><div class="gp-ib blue">MA + Hospital Indemnity bundle: $0 MA premium + $50–$80/mo indemnity = near-zero hospital exposure.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 12</div><div class="gp-t">Life Insurance &amp; Medicare</div></div><div class="gp-bd"><table class="gp-tbl"><tr><th>Type</th><th>Best Use</th><th>Est. at 65</th></tr><tr><td>Term Life</td><td>Income replacement</td><td>$50–$150/mo</td></tr><tr><td>Whole Life</td><td>Estate planning</td><td>$300–$600/mo</td></tr><tr><td>IUL</td><td>Tax-free income</td><td>Varies</td></tr><tr><td>Final Expense</td><td>Burial costs</td><td>$50–$200/mo</td></tr></table><div class="gp-ib blue">IUL + IRMAA: Tax-free IUL income doesn't count in MAGI — keeping clients below IRMAA thresholds, saving $1,000–$7,000/year in Medicare premiums.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 13</div><div class="gp-t">Final Expense Planning</div></div><div class="gp-bd"><p>Average U.S. funeral: <strong>$9,000–$15,000</strong>. 73% of Americans have no dedicated plan.</p><table class="gp-tbl"><tr><th>Feature</th><th>Simplified Issue</th><th>Guaranteed Issue</th></tr><tr><td>Coverage</td><td>$5K–$50K</td><td>$5K–$25K</td></tr><tr><td>Underwriting</td><td>Health questions, no exam</td><td>Guaranteed — no questions</td></tr><tr><td>Waiting period</td><td style="color:#16a34a;">None if qualified</td><td>2-year graded benefit</td></tr></table><div class="gp-ib blue">Opener: "Do you have a plan so your family doesn't have to worry about funeral costs?" Universal need, immediate emotional resonance.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 14</div><div class="gp-t">Social Security Timing Strategy</div></div><div class="gp-bd"><p>When you claim SS affects IRMAA exposure and lifetime income by <strong>$100,000–$300,000+</strong>.</p><table class="gp-tbl"><tr><th>Claim At</th><th>Benefit</th><th>IRMAA Impact</th></tr><tr><td>Age 62 (earliest)</td><td style="color:#dc2626;">−25–30% permanently</td><td>Lower income, may avoid</td></tr><tr><td>FRA (66–67)</td><td>100% of PIA</td><td>May or may not trigger</td></tr><tr><td>Age 70 (maximum)</td><td style="color:#16a34a;">+24–32% permanently</td><td>Higher SS — plan ahead</td></tr></table><div class="gp-ib blue">💡 Bridge: MYGA replaces SS income 65→70, delay SS to 70 for max benefit. 8%/yr delay credit. Often $200K+ in additional lifetime SS income.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 15</div><div class="gp-t">Choosing the Right Plan</div></div><div class="gp-bd"><table class="gp-tbl"><tr><th>Your Situation</th><th>Best Fit</th></tr><tr><td>Ongoing health needs, specialists</td><td style="color:var(--bl);font-weight:700;">Supplement Plan G</td></tr><tr><td>Healthy, comfortable with networks</td><td style="color:var(--bl);font-weight:700;">Medicare Advantage</td></tr><tr><td>High income ($109K+ single)</td><td style="color:var(--bl);font-weight:700;">Supplement + IRMAA review</td></tr><tr><td>Rural / limited MA networks</td><td style="color:var(--bl);font-weight:700;">Medicare Supplement</td></tr><tr><td>Frequent nationwide travel</td><td style="color:var(--bl);font-weight:700;">Medicare Supplement</td></tr><tr><td>Complex medications</td><td style="color:var(--bl);font-weight:700;">Compare all Part D plans</td></tr></table><div class="gp-ib grn">Independent Agent: Same Plan G coverage — identical benefits — yet premiums vary 20–50% between carriers in the same ZIP.</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 16</div><div class="gp-t">Your Medicare Checklist</div></div><div class="gp-bd"><p style="font-weight:700;color:var(--ink);margin-bottom:5px;">12 Months Before 65:</p><div class="gp-blt">Schedule planning review with independent agent</div><div class="gp-blt">List all doctors, specialists, hospitals, prescriptions</div><div class="gp-blt">Decide: claim SS at 65 or delay? Coordinate with agent.</div><div class="gp-blt">Plan HSA: stop contributions 6 months before Medicare</div><p style="font-weight:700;color:var(--ink);margin:7px 0 4px;">3 Months Before (IEP Opens):</p><div class="gp-blt">Apply for Medicare at SSA.gov if not auto-enrolled</div><div class="gp-blt">Select Supplement or Advantage with your agent</div><div class="gp-blt">Enroll in Part D and dental/vision/hearing coverage</div><div class="gp-ib amb">Annual Review (Oct): ANOC letter · Part D formulary · Network · Income for IRMAA changes</div></div></div>
+      <div class="gp"><div class="gp-hd"><div class="gp-sec">Section 17</div><div class="gp-t">Glossary of Key Terms</div></div><div class="gp-bd"><table class="gp-tbl"><tr><th>Term</th><th>Definition</th></tr><tr><td><strong>AEP</strong></td><td>Annual Enrollment Period — Oct 15–Dec 7</td></tr><tr><td><strong>Benefit Period</strong></td><td>Resets after 60 days no inpatient. $1,736 Part A ded. per period.</td></tr><tr><td><strong>Creditable Coverage</strong></td><td>Drug coverage at least as good as Part D standard — prevents penalty</td></tr><tr><td><strong>GLWB</strong></td><td>Guaranteed Lifetime Withdrawal Benefit — annuity rider for lifelong income</td></tr><tr><td><strong>IEP</strong></td><td>Initial Enrollment Period — 7-month window around 65th birthday</td></tr><tr><td><strong>IRMAA</strong></td><td>Income-Related Monthly Adjustment — extra premium for higher earners</td></tr><tr><td><strong>MAGI</strong></td><td>Modified Adjusted Gross Income — Line 11 Form 1040</td></tr><tr><td><strong>MOOP</strong></td><td>Maximum Out-of-Pocket — $9,350 in-network for MA plans 2026</td></tr><tr><td><strong>SEP</strong></td><td>Special Enrollment Period — triggered by qualifying events</td></tr><tr><td><strong>SSA-44</strong></td><td>Form to appeal IRMAA using more recent income after qualifying event</td></tr></table></div></div>
+    </div>
+
+    <div style="text-align:center;margin-top:24px;">
+      <p style="font-size:.95rem;color:var(--mid);max-width:560px;margin:0 auto 14px;line-height:1.65;">Ready for the Guide? <a href="#pricing" style="color:var(--or);font-weight:700;">Start with Growth Kit ($697)</a> — <strong>Branding ($197)</strong> comes next; <strong>Upgrade Your System</strong> ($397 PDF) is the <strong>last</strong> upsell.</p>
+      <p style="font-size:.84rem;color:var(--faint);margin-top:0;">Included in Ultimate ($1,397) · CMS updates re-delivered after each announcement</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="ctr"><div class="tag">Pricing</div><h2 class="sh">Simple. One-Time. Yours Forever.</h2><p class="ss ctr">Own the tools outright. Annual CMS rate updates free, forever.</p><p class="ss ctr" style="max-width:640px;margin-top:-8px;font-size:.95rem;color:var(--body);"><strong>This page:</strong> <strong>Growth Kit</strong> ($697) or <strong>Ultimate</strong> ($1,397) with Stripe. <strong>After $697,</strong> optional upsells: <strong>$197</strong> Branding → <strong>$397</strong> Guide — each its own funnel step. You import the GHL snapshot into your sub-account (video walkthrough included).</p></div>
+    <div class="price-grid">
+      <div class="pcard feat">
+        <div class="pt">Medicare Growth Kit™</div><div class="pamt"><sup>$</sup>697</div><div class="pcad">one-time · instant delivery</div>
+        <div class="pfeats">
+          <div class="pf"><strong>Medicare Clarity Report</strong> — Dark + Light</div>
+          <div class="pf">IRMAA Lead Magnet — Dark + Light</div>
+          <div class="pf">Part D Penalty Tool — Dark + Light</div>
+          <div class="pf">GHL Snapshot — import-ready, 2 clicks</div>
+          <div class="pf">All automation workflows pre-built</div>
+          <div class="pf">Annual AEP automation included</div>
+          <div class="pf">Annual CMS rate updates — free forever</div>
+          <div class="pf no">Custom brand color / logo</div>
+          <div class="pf no">25-page Medicare Guide PDF</div>
+        </div>
+        <a href="https://buy.stripe.com/3cIbJ1ea85xY1mC6fe6sw00" class="btn-buy bor afos-stripe-697">Get Growth Kit — $697 →</a>
+        <p style="font-size:.74rem;color:var(--faint);text-align:center;margin-top:9px;">⚡ Stripe checkout · Upsell steps after payment</p>
+      </div>
+      <div class="pcard brand">
+        <div class="pt">Branding Kit Add-On</div><div class="pamt"><sup>$</sup>197</div><div class="pcad">add-on · requires Growth Kit</div>
+        <div class="pfeats">
+          <div class="pf"><strong>Everything in the Growth Kit</strong></div>
+          <div class="pf">Your brand color on all 6 tools</div>
+          <div class="pf">Your logo in every tool header</div>
+          <div class="pf">Your headshot in agent cards + reports</div>
+          <div class="pf">Facebook Pixel ID wired in everywhere</div>
+          <div class="pf">Re-delivered fully customized</div>
+          <div class="pf no">25-page Medicare Guide PDF</div>
+        </div>
+        <p style="font-size:.82rem;color:var(--mid);text-align:center;line-height:1.55;margin:0;padding:14px 12px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);">First upsell after Growth Kit — <strong>$197</strong> on <strong>/branding</strong>.</p>
+      </div>
+    </div>
+    <div class="guide-add">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span style="font-size:1.3rem;">📘</span><div><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);">Add-On — Previewed In Full Above</div><div style="font-family:var(--fd);font-size:1.15rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;">25-Page White-Label Medicare Guide PDF</div></div></div>
+      <div class="guide-add-row">
+        <div>
+          <p style="font-size:.9rem;color:var(--mid);line-height:1.7;margin-bottom:12px;">All 17 sections shown above, branded to your agency. Give it away at seminars, send after appointments, use as a lead magnet. Updated every November — <strong style="color:var(--ink);">free forever.</strong></p>
+          <div class="gf-grid">
+            <div class="gf">Medicare Parts A, B, C, D — complete</div>
+            <div class="gf">IRMAA — all filing statuses + SSA-44</div>
+            <div class="gf">Annuities &amp; guaranteed income</div>
+            <div class="gf">Long-term care — LTC &amp; hybrids</div>
+            <div class="gf">Hospital indemnity &amp; critical illness</div>
+            <div class="gf">Life insurance &amp; final expense</div>
+            <div class="gf">Social Security timing strategy</div>
+            <div class="gf">25-point checklist + full glossary</div>
+          </div>
+        </div>
+        <div class="guide-price-box">
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:4px;">Add-On Price</div>
+          <div style="font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--ink);letter-spacing:-.04em;line-height:1;margin-bottom:2px;"><sup style="font-size:.85rem;vertical-align:super;">$</sup>397</div>
+          <div style="font-size:.76rem;color:var(--mid);margin-bottom:13px;">one-time · free updates forever</div>
+          <p style="font-size:.78rem;color:var(--mid);line-height:1.5;margin:0;padding:12px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);text-align:center;">Last upsell — <strong>$397</strong> Guide on <strong>/guide</strong> after Branding.</p>
+          <p style="font-size:.69rem;color:var(--faint);margin-top:8px;">Not sold from this landing page</p>
+        </div>
+      </div>
+    </div>
+    <!-- ULTIMATE BUNDLE -->
+    <div class="bundle">
+      <div class="bundle-in">
+        <div>
+          <div class="bundle-pill">⭐ Most Complete · Best Value</div>
+          <div class="bundle-t">Ultimate Bundle — Everything</div>
+          <div class="bundle-s">Every tool, your branding, and the 25-page guide in one checkout. Import the snapshot into your GHL sub-account (same self-serve path as Growth Kit — video included). Optional welcome call after purchase.</div>
+          <div class="bundle-feats">
+            <div class="bf"><strong>All 6 tools</strong> — Dark &amp; Light</div>
+            <div class="bf"><strong>GHL Snapshot</strong> — full automation</div>
+            <div class="bf"><strong>Branding Kit</strong> — color, logo, pixel</div>
+            <div class="bf"><strong>25-Page Medicare Guide</strong> PDF</div>
+            <div class="bf"><strong>Optional welcome call</strong> — walkthrough of what you received</div>
+            <div class="bf"><strong>Annual CMS updates</strong> — free, forever</div>
+          </div>
+          <div class="bundle-sav"><span>One checkout · Skip the upsell funnel</span></div>
+        </div>
+        <div class="bprice-side">
+          <div class="bpl">Complete Package</div>
+          <div class="bp"><sup>$</sup>1,397</div>
+          <div class="bpc">one-time · everything included</div>
+          <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-ult afos-stripe-ult">Get the Ultimate Bundle →</a>
+          <p style="font-size:.69rem;color:rgba(255,255,255,.38);margin-top:9px;line-height:1.5;">Instant delivery · No contracts</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTHORITY -->
+<section class="auth">
+  <div class="wrap-sm">
+    <div class="ctr"><div class="tag blue">Built in the Field</div><h2 class="sh" style="margin-bottom:22px;">Built by a Medicare Agent,<br>Not a Software Company</h2></div>
+    <div class="auth-card">
+      <div class="auth-q">"I built every one of these tools for my own practice first — because nothing else existed that was specific enough to Medicare or actually converted. I use them every day. Now I'm making the same system available to independent agents who want to grow without burning out on cold calls and bought leads."</div>
+      <div class="auth-who"><strong>AgentFlowOS</strong> — Created by a licensed Medicare specialist with 21+ years of experience, 2,000+ clients served, and 150+ five-star reviews.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-sec">
+  <div class="wrap-sm">
+    <div class="ctr" style="margin-bottom:28px;"><div class="tag blue">FAQ</div><h2 class="sh">Questions</h2></div>
+    <details><summary>Do I need to know how to code?</summary><div class="faq-a">No. Each tool is a self-contained HTML file. In GHL, drag a "Custom HTML" block onto your page and paste the file contents in. A video walkthrough is included with every purchase.</div></details>
+    <details><summary>Do I need GoHighLevel?</summary><div class="faq-a">GHL is strongly recommended — the snapshot installs your entire automation system in 2 clicks. The HTML tools will embed on any website, but without GHL you'll manage follow-up manually.</div></details>
+    <details><summary>How does the GHL snapshot work? Do I need a webhook URL?</summary><div class="faq-a">No. The snapshot creates the inbound webhook automatically when you import it. All custom fields, tags, pipelines, and workflows are created in your GHL account the moment you import.</div></details>
+    <details><summary>Are annual CMS rate updates really free forever?</summary><div class="faq-a">Yes. The HTML tools point to a hosted JSON config file we update each November. The next time any prospect opens your tool, it fetches the updated rates overnight — zero file changes on your end, ever. For the PDF guide, we regenerate and re-deliver within 48 hours of the CMS announcement.</div></details>
+    <details><summary>What's the difference between Generic and Branded?</summary><div class="faq-a">The $697 Growth Kit includes generic versions with your agency name, phone, and booking link in a standard blue scheme. The $197 Branding Kit re-delivers all tools with your exact brand color, logo, headshot, and Facebook Pixel ID. Branded tools look like custom-built software — not a template.</div></details>
+    <details><summary>Can I use these in all my licensed states?</summary><div class="faq-a">Yes. No per-state restrictions. One purchase covers your entire book of business.</div></details>
+    <details><summary>Questions before buying?</summary><div class="faq-a">Email <a href="mailto:hello@agentflowos.com" style="color:var(--or);">us here</a>. Responses within 1 business day.</div></details>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="fc-sec">
+  <div class="wrap">
+    <div class="fc-in">
+      <div class="fc-glow"></div>
+      <img src="https://assets.cdn.filesafe.space/aalZz3JfkmBWlXlpqvSa/media/69d0fe47849c507b529c66fc.png" alt="AgentFlowOS" onerror="this.style.display='none'">
+      <div class="fc-t">The Complete Medicare<br>Growth System</div>
+      <div class="fc-s">Every tool, your branding, and the guide. Import into GHL and go live on your timeline — optional welcome call with Ultimate.</div>
+      <div class="fc-ctas">
+        <div class="hero-ctas-dual" style="margin-bottom:8px;">
+          <a href="https://buy.stripe.com/3cIbJ1ea85xY1mC6fe6sw00" class="btn-hero afos-stripe-697">Growth Kit — $697<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-hero btn-hero-ghost afos-stripe-ult" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.55);box-shadow:none;">Ultimate — $1,397<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+        <p style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.35);max-width:440px;margin:0 auto;line-height:1.5;">After $697: $197 Branding → $397 Guide — each with its own Stripe link.</p>
+        <span style="font-size:.82rem;color:rgba(255,255,255,.28);">Annual CMS updates free forever · No contracts</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><div class="foot-legal">AgentFlowOS / Medicare Growth Kit™ is not connected with or endorsed by the United States government or the federal Medicare program. Tools are for use by licensed independent Medicare insurance agents only. All deployed tools must include the required CMS disclaimer and comply with applicable state and federal insurance marketing regulations. 2026 CMS rates sourced from CMS.gov November 14, 2025. For educational purposes only.</div></div></footer>
+
+</main>
+
+<script>
+/* ── PATHWAY PLAYER ── */
+let curPW=0,curStep=0,playTimer=null,playing=false;
+const SS_IDS=['ss0','ss1','ss2','ss3','ss4','ss5'];
+
+function selPW(n){
+  curPW=n;curStep=0;playing=false;if(playTimer)clearInterval(playTimer);
+  var pb=document.getElementById('play-btn');
+  if(pb)pb.textContent='▶ Play Through';
+  document.querySelectorAll('.pw-btn').forEach((b,i)=>{
+    b.classList.toggle('active',i===n);
+    b.setAttribute('aria-pressed',i===n?'true':'false');
+  });
+  renderStep(0);
+}
+
+function renderStep(idx){
+  curStep=idx;
+  const pw=PATHWAYS[curPW];
+  if(!pw||!pw.steps||idx<0||idx>=pw.steps.length)return;
+  const step=pw.steps[idx];
+  SS_IDS.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.classList.toggle('active',i===idx);});
+  var spf=document.getElementById('sim-pf');
+  if(spf&&step.prog!=null)spf.style.width=step.prog+'%';
+  var cs=document.getElementById('ctrl-stat');
+  if(cs)cs.textContent='Step '+(idx+1)+' of '+pw.steps.length;
+
+  if(step.opts){
+    const qid=idx===0?0:1;
+    const tagEl=document.getElementById('ss'+qid+'-tag');
+    const qEl=document.getElementById('ss'+qid+'-q');
+    const hEl=document.getElementById('ss'+qid+'-h');
+    const optsEl=document.getElementById('ss'+qid+'-opts');
+    const nextEl=document.getElementById('ss'+qid+'-next');
+    if(tagEl)tagEl.textContent=step.tag;
+    if(qEl)qEl.textContent=step.q;
+    if(hEl)hEl.textContent=step.hint;
+    if(optsEl){
+      optsEl.innerHTML='';
+      step.opts.forEach((o,i)=>{
+        const d=document.createElement('div');
+        d.className='sim-opt'+(o.pick?' pick':'');
+        d.innerHTML='<span class="soi">'+o.ico+'</span><div><div class="sol">'+o.t+'</div><div class="sod">'+o.d+'</div></div><div class="sck">'+(o.pick?'✓':'')+'</div>';
+        setTimeout(()=>d.classList.add('show'),70*i);
+        optsEl.appendChild(d);
+      });
+    }
+    if(nextEl&&step.next){
+      nextEl.textContent=step.next;
+      const cl=step.next.startsWith('⚠️')?'amber':step.next.startsWith('✅')?'grn':'blue';
+      nextEl.className='sim-next '+cl;
+      setTimeout(()=>nextEl.classList.add('show'),500);
+    }
+  }
+  if(step.irmaa){document.getElementById('ss2-tag').textContent=step.tag||'';}
+  if(step.report){renderReport();}
+  renderRightPanel(idx);
+}
+
+function renderReport(){
+  const pw=PATHWAYS[curPW];
+  const ig=document.getElementById('sim-ic');
+  if(ig)ig.innerHTML=pw.insights.map(i=>'<div class="ic '+i.cl+'"><div class="ic-tag">'+i.tag+'</div><div class="ic-lbl">'+i.lbl+'</div><div class="ic-val">'+i.val+'</div></div>').join('');
+  const tlb=document.getElementById('sim-tl-body');
+  if(tlb)tlb.innerHTML=pw.timeline.map(t=>'<div class="tli"><div class="tldot '+t.dot+'"></div><div><div class="tl-date">'+t.date+'</div><div class="tl-ev">'+t.ev+'</div><div class="tl-note">'+t.note+'</div><span class="tlchip '+t.chip+'">'+t.chipLabel+'</span></div></div>').join('');
+}
+
+function renderRightPanel(idx){
+  const pw=PATHWAYS[curPW];
+  const out=document.getElementById('rp-out');
+  if(!out)return;
+  out.innerHTML='';
+  const cards=[
+    {show:true,ico:'⚙️',tag:'GHL — Happens Instantly on Submit',ttl:'Custom Fields Written to Contact',body:'<div class="rp-body">'+pw.ghl.map(f=>'<div class="rp-row"><span class="rp-l">'+f.split(':')[0]+'</span><span class="rp-v">'+f.split(':').slice(1).join(':').trim()+'</span></div>').join('')+'</div>'},
+    {show:true,ico:'🏷',tag:'GHL Tags Auto-Applied',ttl:'Contact Tagged by Pathway',body:'<div class="rp-body">'+pw.tags.map(t=>'<span style="display:inline-block;background:var(--bl-lt);border:1px solid var(--bl-md);border-radius:100px;padding:3px 10px;font-size:.72rem;font-weight:700;color:var(--bl);margin:2px;">'+t+'</span>').join('')+'</div>'},
+    {show:idx>=1,ico:'📱',tag:'GHL — Fires 2 Minutes After Submit',ttl:'Automatic SMS Follow-Up',body:'<div class="rp-body"><div class="sms-bub">Hi [First Name]! Your Medicare Clarity Report is ready at [link]. I noticed you may have an IRMAA surcharge — let me know if you\'d like to talk through your options. — [Agent Name]</div><div style="font-size:.7rem;color:var(--mid);margin-top:6px;">Pathway-specific · Delivered in 2 minutes · Book link included</div></div>'},
+    {show:idx>=3,ico:'🔀',tag:'GHL Pipeline',ttl:'Contact Stage: New Lead',body:'<div class="rp-body"><div class="pipe-row">'+["New Lead","Contacted","Appt Set","Review Done","Enrolled"].map((s,i)=>'<div class="pipe-stage" style="background:'+(i===0?'var(--bl)':'var(--bg3)')+';color:'+(i===0?'#fff':'var(--mid)')+';">'+s+'</div>'+(i<4?'<div class="pipe-arr">→</div>':'')).join('')+'</div></div>'},
+    {show:!!(pw.steps[idx]&&pw.steps[idx].report),ico:'📋',tag:'Report Delivered to Prospect',ttl:'Personalized Medicare Clarity Report',body:'<div class="rp-body"><div class="ic-grid">'+PATHWAYS[curPW].insights.map(i=>'<div class="ic '+i.cl+'"><div class="ic-tag">'+i.tag+'</div><div class="ic-lbl">'+i.lbl+'</div><div class="ic-val">'+i.val+'</div></div>').join('')+'</div><div style="margin-top:8px;padding:8px 10px;background:var(--or-lt);border:1px solid #fed7aa;border-radius:7px;font-size:.76rem;color:var(--or-dk);">📅 Booking link at bottom of every report. FB Pixel fires on completion.</div></div>'},
+  ];
+  cards.forEach((c,i)=>{
+    if(!c.show)return;
+    const el=document.createElement('div');
+    el.className='rp-card';
+    el.innerHTML='<div class="rp-hd"><span>'+c.ico+'</span><div><div class="rp-tag">'+c.tag+'</div><div class="rp-ttl">'+c.ttl+'</div></div></div>'+c.body;
+    out.appendChild(el);
+    setTimeout(()=>el.classList.add('show'),100*i);
+  });
+}
+
+function playerStep(){const pw=PATHWAYS[curPW];if(!pw||!pw.steps)return;if(curStep<pw.steps.length-1){renderStep(curStep+1);}else{renderStep(0);}}
+function playerReset(){if(playTimer)clearInterval(playTimer);playing=false;var pb=document.getElementById('play-btn');if(pb)pb.textContent='▶ Play Through';renderStep(0);}
+function playerPlay(){
+  var pb=document.getElementById('play-btn');
+  if(playing){clearInterval(playTimer);playing=false;if(pb)pb.textContent='▶ Play Through';return;}
+  playing=true;if(pb)pb.textContent='⏸ Pause';
+  const pw=PATHWAYS[curPW];
+  if(!pw||!pw.steps){playing=false;if(pb)pb.textContent='▶ Play Through';return;}
+  playTimer=setInterval(()=>{
+    if(curStep<pw.steps.length-1){renderStep(curStep+1);}
+    else{clearInterval(playTimer);playing=false;if(pb)pb.textContent='▶ Play Through';}
+  },2200);
+}
+
+function afosBindUI(){
+  var root=document.getElementById('afos-mgk');
+  if(!root)return;
+  root.addEventListener('click',function(ev){
+    var pathwayBtn=ev.target.closest('[data-afos-pw]');
+    if(pathwayBtn){
+      ev.preventDefault();
+      selPW(parseInt(pathwayBtn.getAttribute('data-afos-pw'),10));
+      return;
+    }
+    var ctrl=ev.target.closest('[data-afos-action]');
+    if(ctrl){
+      var act=ctrl.getAttribute('data-afos-action');
+      if(act==='play')playerPlay();
+      else if(act==='step')playerStep();
+      else if(act==='reset')playerReset();
+      return;
+    }
+    var stA=ev.target.closest('a.afos-stripe-697, a.afos-stripe-ult');
+    if(stA){
+      try{sessionStorage.setItem('afos_last_checkout_tier',stA.classList.contains('afos-stripe-ult')?'ultimate':'697');}catch(e){}
+    }
+  });
+}
+
+/* ── BUY: only 697 + ultimate on this page ── */
+function buy(tier){
+  const url=tier==="ultimate"?LINKS.stripeUltimate:LINKS.stripe697;
+  if(!url||String(url).indexOf("YOUR_")!==-1){alert("Set STRIPE_GROWTH_KIT_697 and STRIPE_ULTIMATE_1397 at the top of this file.");return;}
+  try{sessionStorage.setItem("afos_last_checkout_tier",tier);}catch(e){}
+  window.location.assign(url);
+}
+
+function afosStripeReturnInit(){
+  var el=document.getElementById("afos-stripe-return");
+  if(!el)return;
+  var ref=document.referrer||"";
+  if(/stripe\.com/i.test(ref))el.removeAttribute("hidden");
+  var x=document.getElementById("afos-stripe-return-x");
+  if(x)x.addEventListener("click",function(){el.setAttribute("hidden","");});
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  afosBindUI();
+  selPW(0);
+  afosStripeReturnInit();
+});
+window.selPW=selPW;
+window.playerPlay=playerPlay;
+window.playerStep=playerStep;
+window.playerReset=playerReset;
+window.buy=buy;
+window.PATHWAYS=PATHWAYS;
+window.LINKS=LINKS;
+</script>
+</body>
+</html>

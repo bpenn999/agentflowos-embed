@@ -1,33 +1,17 @@
 <!DOCTYPE html>
 <!--
-  STRIPE + GHL FUNNEL FLOW (no GHL order form on this page)
+  STRIPE + GHL — Two one-time offers: Growth Kit ($697) and Ultimate ($1,397). Lite CRM ($97/mo) is optional and only for buyers who do not have a GHL account — not required. Payment Link URLs in script below.
 
-  Published step 1 (this page): https://agentflowos.ai/mgk
-  Step 2 — Branding $197: https://agentflowos.ai/branding
-  Step 3 — Guide $397: https://agentflowos.ai/guide (paste funnel-03-branding.html here — DFY step removed)
-  Step 4 — Thank you: https://agentflowos.ai/thankyou — booking CTA only for Ultimate (?bundle=1) or ?book=1
-  Ultimate Stripe “after payment”: https://agentflowos.ai/branding?bundle=1
+  Live HTML: hosted URL + iframe in GHL (paste once — agentflowos-ghl-iframe-paste-once.html).
+  Thank-you / intake: /thankyou (or your post-checkout URL). Old /branding + /guide upsell ladder is retired for this offer.
 
-  ORDER: $697 → $197 → $397 → thank you. Ultimate $1,397 on this page only.
+  Stripe → After payment (set in EACH Payment Link — must NOT send buyers to /dfy or the old upsell funnel unless you still use it):
+  • $697 Growth Kit  → https://agentflowos.ai/thankyou (or your intake form URL)
+  • $1,397 Ultimate  → https://agentflowos.ai/thankyou (same; use query params if you branch in GHL)
 
-  Stripe “after payment”:
-    $697 → https://agentflowos.ai/branding
-    $1,397 → https://agentflowos.ai/branding?bundle=1
-    $197 → https://agentflowos.ai/guide
-    $397 → https://agentflowos.ai/thankyou
-  Deactivate/remove the old $247 Payment Link in Stripe.
+  Lite CRM (no GHL only): optional $97/mo subscription Payment Link; paste into STRIPE_LITE_CRM_97 below. After payment → thank you or onboarding page.
 
-  Files: funnel-02 → /branding · funnel-03-branding.html → /guide · funnel-04-dfy.html = redirect stub for old /dfy · funnel-05 → /thankyou
-
-  PAGE 1 = this file. Only two checkouts here:
-    • Growth Kit $697 → STRIPE_GROWTH_KIT_697 below
-    • Ultimate $1,397 → STRIPE_ULTIMATE_1397 below
-  Display price is always $1,397 (not $1,497). Re-paste this file into GHL if live HTML drifted.
-
-  No $397 / $197 checkout buttons on this landing page.
-
-  GHL: paste the ENTIRE file in one Custom Code block that allows <script> (not “HTML only” sanitizers).
-  Demo uses delegated clicks — no inline onclick on pathway / Play Through.
+  Support: LINKS.supportEmail. Own GHL → written instructions; sub-account → LINKS.scheduleSetupUrl or link in post-purchase email.
 -->
 <html lang="en">
 <head>
@@ -39,14 +23,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
-/* Stripe Payment Links — paste your live links from dashboard.stripe.com/payment-links */
+/* Stripe Payment Links — paste from dashboard.stripe.com/payment-links */
 const STRIPE_GROWTH_KIT_697 = "https://buy.stripe.com/3cIbJ1ea85xY1mC6fe6sw00";
+/** Ultimate bundle — $1,397 in Stripe; replace URL when Payment Link matches */
 const STRIPE_ULTIMATE_1397 = "https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04";
+/** Lite CRM — $97/mo, optional; for buyers without GHL. Recurring Payment Link; paste URL (replace YOUR_… when ready) */
+const STRIPE_LITE_CRM_97 = "YOUR_STRIPE_LITE_CRM_97_MO";
 
 const LINKS = {
   stripe697: STRIPE_GROWTH_KIT_697,
   stripeUltimate: STRIPE_ULTIMATE_1397,
-  email: "hello@agentflowos.com"
+  stripeLiteCrm: STRIPE_LITE_CRM_97,
+  supportEmail: "support@agentflowos.ai",
+  /** GHL booking widget — powers .afos-schedule links (hero + FAQ) */
+  scheduleSetupUrl: "https://book.agentflowos.ai/widget/bookings/flowsetup"
 };
 const IRMAA={
   single:[{max:109000,b:0,d:0,t:0},{max:137000,b:81.20,d:14.50,t:1},{max:171000,b:202.90,d:37.50,t:2},{max:205000,b:324.60,d:60.40,t:3},{max:499999,b:446.30,d:83.30,t:4},{max:Infinity,b:487.00,d:91.00,t:5}],
@@ -183,7 +173,8 @@ const PATHWAYS={
 #afos-mgk .fc-sec .btn-hero-ghost:hover{background:rgba(255,255,255,.22)!important;border-color:rgba(255,255,255,.85)!important;box-shadow:0 6px 24px rgba(0,0,0,.2)!important;}
 #afos-mgk .btn-hero svg{transition:transform .2s var(--ease-s);}
 #afos-mgk .btn-hero:hover svg{transform:translateX(3px);}
-#afos-mgk .hero-note{font-size:.85rem;color:var(--faint);max-width:480px;text-align:center;line-height:1.5;}
+#afos-mgk .hero-note{font-size:.85rem;color:var(--faint);max-width:520px;text-align:center;line-height:1.5;}
+#afos-mgk .hero-note .afos-support-mail{color:var(--or);font-weight:600;text-decoration:underline;text-underline-offset:2px;}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── STATS BAR ── */
@@ -405,6 +396,18 @@ const PATHWAYS={
 
 /* ── PRICING ── */
 #afos-mgk .pricing{padding:80px 0;background:var(--bg2);}
+#afos-mgk .offer-map{margin-bottom:36px;padding:24px 22px;background:var(--bg);border:1px solid var(--bdr);border-radius:var(--rl);box-shadow:var(--sh-sm);}
+#afos-mgk .offer-map h3{margin:0 0 6px;font-family:var(--fd);font-size:1.2rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;}
+#afos-mgk .offer-map .om-sub{margin:0 0 18px;font-size:.88rem;color:var(--mid);line-height:1.5;}
+#afos-mgk .offer-map-grid{display:grid;gap:14px;}
+@media(min-width:860px){#afos-mgk .offer-map-grid{grid-template-columns:1fr 1fr;}}
+#afos-mgk .om-block{padding:14px 16px;background:var(--bg2);border-radius:var(--rs);border:1px solid var(--bdr);}
+#afos-mgk .om-block h4{margin:0 0 8px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--mid);}
+#afos-mgk .om-block p,#afos-mgk .om-block li{margin:0;font-size:.86rem;color:var(--body);line-height:1.55;}
+#afos-mgk .om-block ul{margin:8px 0 0;padding-left:1.1rem;}
+#afos-mgk .om-block li{margin:4px 0;}
+#afos-mgk .om-flow{font-size:.88rem;font-weight:600;color:var(--navy);line-height:1.65;font-family:var(--fb);}
+#afos-mgk .om-note{margin-top:14px;padding-top:14px;border-top:1px solid var(--bdr);font-size:.8rem;color:var(--faint);line-height:1.5;}
 #afos-mgk .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;max-width:900px;margin-left:auto;margin-right:auto;}
 #afos-mgk .pcard{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;transition:box-shadow .15s;position:relative;}
 #afos-mgk .pcard:hover{box-shadow:var(--sh-md);}
@@ -543,6 +546,7 @@ const PATHWAYS={
     <div class="nav-links">
       <a href="#demo" class="nl">See Demo</a>
       <a href="#guide-section" class="nl">The Guide</a>
+      <a href="#offer-map" class="nl">How it works</a>
       <a href="#pricing" class="nl">Pricing</a>
       <a href="#pricing" class="nav-cta nav-cta-muted">View plans →</a>
     </div>
@@ -552,7 +556,7 @@ const PATHWAYS={
 <div id="afos-stripe-return" class="stripe-return" role="status" hidden>
   <div class="stripe-return-in">
     <span>You're back — checkout wasn't completed.</span>
-    <a href="#pricing">Pick Growth Kit ($697) or Ultimate ($1,397) below — upsells: $197 → $397</a>
+    <a href="#pricing">Pick Growth Kit ($697) or Ultimate ($1,397) below</a>
     <button type="button" class="stripe-return-x" id="afos-stripe-return-x" aria-label="Dismiss">×</button>
   </div>
 </div>
@@ -576,7 +580,7 @@ const PATHWAYS={
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>
-        <span class="hero-note">Two real checkout buttons above — <strong>$697</strong> then optional <strong>$197</strong> Branding → <strong>$397</strong> Guide (self-serve import into your GHL sub-account). <strong>$1,397</strong> Ultimate is everything in one checkout. Annual CMS updates free · No contracts</span>
+        <span class="hero-note"><strong>$697</strong> Growth Kit (core tools + snapshot, default styling) or <strong>$1,397</strong> Ultimate (adds full branding + 25-page guide in one checkout). <strong>Have GHL?</strong> That’s the intended setup — written import steps (own account); sub-account? <span class="afos-schedule-fallback">Use the calendar link in your post-purchase email</span><a class="afos-schedule" href="#" style="color:var(--or);font-weight:600;text-decoration:underline;margin-left:4px;" hidden>or book here</a>. <strong>No GHL?</strong> Optional <strong>Lite CRM $97/mo</strong> — not required. Questions: <a class="afos-support-mail" href="mailto:support@agentflowos.ai">support@agentflowos.ai</a> · Annual CMS updates free · No contracts</span>
       </div>
     </div>
   </div>
@@ -587,6 +591,7 @@ const PATHWAYS={
       <div class="si"><div class="si-n">GHL</div><div class="si-l">Snapshot — 2-click import</div></div>
       <div class="si"><div class="si-n">25</div><div class="si-l">Page Medicare guide PDF</div></div>
       <div class="si"><div class="si-n">∞</div><div class="si-l">Annual updates, free</div></div>
+      <div class="si"><div class="si-n">$697</div><div class="si-l">Growth Kit · one-time</div></div>
       <div class="si"><div class="si-n">$1,397</div><div class="si-l">Ultimate · all-in</div></div>
     </div>
   </div>
@@ -726,7 +731,7 @@ const PATHWAYS={
       <div class="fc"><span class="fc-ico">💊</span><div class="fc-name">Part D Penalty Tool</div><div class="fc-desc">Interactive slider calculates the permanent lifetime penalty. Give away free or embed on your site — creates immediate urgency and a clear reason to call.</div><span class="fc-badge fb-a">Dark + Light included</span></div>
       <div class="fc"><span class="fc-ico">⚙️</span><div class="fc-name">GHL Snapshot</div><div class="fc-desc">Import into GHL in 2 clicks. Creates all custom fields, tags, pipelines, workflows, and the inbound webhook automatically. No webhook URL hunting.</div><span class="fc-badge fb-s">Snapshot included</span></div>
       <div class="fc"><span class="fc-ico">🤖</span><div class="fc-name">Automated Follow-Up</div><div class="fc-desc">SMS + email sequences fire the moment a prospect submits. Pathway-specific messaging and annual AEP automation built in and ready to go.</div><span class="fc-badge fb-s">Snapshot included</span></div>
-      <div class="fc"><span class="fc-ico">📘</span><div class="fc-name">25-Page Medicare Guide</div><div class="fc-desc">White-label patient education PDF covering all Medicare topics plus every ancillary cross-sell product. Branded to your agency. Updated annually free.</div><span class="fc-badge fb-u">Ultimate Bundle</span></div>
+      <div class="fc"><span class="fc-ico">📘</span><div class="fc-name">25-Page Medicare Guide</div><div class="fc-desc">White-label patient education PDF covering all Medicare topics plus every ancillary cross-sell product. Branded to your agency. Updated annually free.</div><span class="fc-badge fb-u">Ultimate ($1,397) only</span></div>
     </div>
   </div>
 </section>
@@ -739,7 +744,7 @@ const PATHWAYS={
         <div>
           <div class="tag blue">GHL Snapshot</div>
           <h2 class="sh" style="font-size:clamp(1.5rem,3vw,2rem);margin-bottom:10px;">Your Entire System<br>Installs in 2 Clicks</h2>
-          <p style="font-size:.95rem;color:var(--mid);line-height:1.7;">No webhook URL, no custom fields setup, no workflow building. Import the snapshot — everything creates itself automatically in your GHL account the moment you import.</p>
+          <p style="font-size:.95rem;color:var(--mid);line-height:1.7;">No webhook URL, no custom fields setup, no workflow building. Import the snapshot — everything creates itself automatically in your GHL account the moment you import. <strong>Your own GHL?</strong> You get clear written instructions. <strong>Agency sub-account?</strong> Book time on our calendar for hands-on help — scheduling link comes in your post-purchase email.</p>
         </div>
         <div class="snap-grid">
           <div class="sg"><div class="sg-ico">📋</div><div class="sg-t">12 Custom Contact Fields</div><div class="sg-b">Pathway, IRMAA tier, monthly surcharge, annual amount, birth month/year, SS status, employer size, plan priority — pre-built.</div></div>
@@ -757,9 +762,9 @@ const PATHWAYS={
   <div class="wrap">
     <div class="ctr"><div class="tag">How It Works</div><h2 class="sh">Live in Under an Hour</h2><p class="ss ctr">No developers. No complex integrations. If you can paste text, you can deploy this system.</p></div>
     <div class="how-grid">
-      <div><div class="hw-n">1</div><div class="hw-t">Buy &amp; fill 7-field intake</div><div class="hw-b">Instant access. Name, agency, phone, booking link, theme choice. 4 minutes. No webhook URL needed.</div></div>
+      <div><div class="hw-n">1</div><div class="hw-t">Checkout &amp; complete intake</div><div class="hw-b"><strong>Growth Kit ($697)</strong> or <strong>Ultimate ($1,397)</strong> — then name, agency, phone, booking link, theme. Ultimate buyers also submit branding assets for the guide. About 4 minutes. No webhook URL needed.</div></div>
       <div><div class="hw-n">2</div><div class="hw-t">Download your package</div><div class="hw-b">Dark AND Light versions of all tools configured with your info — download as a ZIP instantly.</div></div>
-      <div><div class="hw-n">3</div><div class="hw-t">Import GHL snapshot</div><div class="hw-b">2 clicks in GHL. All custom fields, tags, pipelines, workflows, and webhook created automatically.</div></div>
+      <div><div class="hw-n">3</div><div class="hw-t">Import the GHL snapshot</div><div class="hw-b">2 clicks in GHL — fields, tags, pipelines, workflows, and webhook appear automatically. Main-account owners follow the written guide; sub-account users use the calendar link we send you to book setup with us.</div></div>
       <div><div class="hw-n">4</div><div class="hw-t">Drive traffic &amp; book</div><div class="hw-b">Send prospects through your tools. GHL handles every follow-up. You wake up to booked appointments.</div></div>
     </div>
   </div>
@@ -780,12 +785,15 @@ const PATHWAYS={
 <section class="guide-sec" id="guide-section">
   <div class="wrap">
     <div class="ctr" style="margin-bottom:32px;">
-      <div class="tag">📘 Add-On — $397 · Annual Updates Free Forever</div>
+      <div class="tag">📘 25-Page Guide · Included in Ultimate</div>
       <h2 class="sh">25-Page White-Label<br>Medicare Complete Guide</h2>
       <p class="ss ctr">Every section below is actual content from the guide — not a description of it. Branded to your agency name, logo, phone, and booking link on every page.</p>
-      <p style="font-size:.9rem;color:var(--mid);max-width:520px;margin:0 auto 16px;line-height:1.65;">The Guide ($397) is <strong>not</strong> sold on this page. After Growth Kit you’ll see <strong>Branding ($197)</strong>, then <strong>Upgrade Your System</strong> — the 25-page PDF on the last upsell step. (We removed the old done-for-you install — most agencies use GHL sub-accounts and import the snapshot themselves.)</p>
-      <a href="#pricing" class="btn-hero" style="margin-bottom:0;">Get Growth Kit first — $697<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-      <p style="font-size:.84rem;color:var(--faint);margin-top:12px;">Or <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="afos-stripe-ult" style="color:var(--or);font-weight:700;">Ultimate Bundle ($1,397)</a> includes everything · No separate Guide upsell needed</p>
+      <p style="font-size:.9rem;color:var(--mid);max-width:520px;margin:0 auto 16px;line-height:1.65;">The full PDF is included with <strong>Ultimate ($1,397)</strong> only. <strong>Growth Kit ($697)</strong> includes the three lead tools + GHL snapshot with default styling — upgrade path is Ultimate if you want the guide and full branding package.</p>
+      <div class="hero-ctas-dual" style="max-width:400px;margin:0 auto;">
+        <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-hero afos-stripe-ult" style="margin-bottom:0;">Ultimate — guide included · $1,397<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="https://buy.stripe.com/3cIbJ1ea85xY1mC6fe6sw00" class="btn-hero btn-hero-ghost afos-stripe-697" style="margin-bottom:0;">Start Growth Kit — $697<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <p style="font-size:.84rem;color:var(--faint);margin-top:12px;">Want the guide? <a href="#pricing" style="color:var(--or);font-weight:700;">Choose Ultimate ($1,397)</a> — or start with <a href="#pricing" style="color:var(--or);font-weight:700;">Growth Kit ($697)</a> and email <a class="afos-support-mail" href="mailto:support@agentflowos.ai">support@agentflowos.ai</a> if you need a custom upgrade.</p>
     </div>
 
     <!-- WHITE-LABEL EXAMPLE -->
@@ -858,12 +866,13 @@ const PATHWAYS={
     <!-- ALL 17 SECTIONS -->
     <h3 style="font-family:var(--fd);font-size:1.2rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:18px;text-align:center;">All 17 Sections — Actual Content, Not Descriptions</h3>
     <div class="guide-label-bar">
-      <div><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:5px;">📘 Add-On — $397 · Annual Updates Free Forever</div><div style="font-family:var(--fd);font-size:1.15rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;">25-Page White-Label Medicare Complete Guide</div><div style="font-size:.88rem;color:var(--mid);margin-top:4px;">Scroll through all 17 sections below — this is the real content, branded to your agency.</div></div>
+      <div><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:5px;">📘 Included in Ultimate ($1,397)</div><div style="font-family:var(--fd);font-size:1.15rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;">25-Page White-Label Medicare Complete Guide</div><div style="font-size:.88rem;color:var(--mid);margin-top:4px;">Scroll through all 17 sections below — this is the real content, branded to your agency.</div></div>
       <div class="guide-price-box">
-        <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:4px;">Add-On</div>
-        <div style="font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--ink);letter-spacing:-.04em;line-height:1;margin-bottom:2px;"><sup style="font-size:.85rem;vertical-align:super;">$</sup>397</div>
-        <div style="font-size:.75rem;color:var(--mid);margin-bottom:12px;">free updates forever</div>
-        <p style="font-size:.78rem;color:var(--mid);line-height:1.5;margin:0;padding:10px 12px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);text-align:center;">Add on <strong>last upsell step</strong> ($397 after $197 Branding) — not here.</p>
+        <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:4px;">Ultimate</div>
+        <div style="font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--ink);letter-spacing:-.04em;line-height:1;margin-bottom:2px;"><sup style="font-size:.85rem;vertical-align:super;">$</sup>1,397</div>
+        <div style="font-size:.75rem;color:var(--mid);margin-bottom:12px;">one-time · guide + full branding</div>
+        <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-hero afos-stripe-ult" style="display:block;text-align:center;padding:10px 14px;font-size:.88rem;margin-bottom:8px;">Get Ultimate — $1,397</a>
+        <p style="font-size:.72rem;color:var(--mid);line-height:1.45;margin:0;">Not sold separately on this offer — <strong>Ultimate</strong> includes the guide.</p>
       </div>
     </div>
     <div class="guide-grid">
@@ -887,8 +896,8 @@ const PATHWAYS={
     </div>
 
     <div style="text-align:center;margin-top:24px;">
-      <p style="font-size:.95rem;color:var(--mid);max-width:560px;margin:0 auto 14px;line-height:1.65;">Ready for the Guide? <a href="#pricing" style="color:var(--or);font-weight:700;">Start with Growth Kit ($697)</a> — <strong>Branding ($197)</strong> comes next; <strong>Upgrade Your System</strong> ($397 PDF) is the <strong>last</strong> upsell.</p>
-      <p style="font-size:.84rem;color:var(--faint);margin-top:0;">Included in Ultimate ($1,397) · CMS updates re-delivered after each announcement</p>
+      <p style="font-size:.95rem;color:var(--mid);max-width:560px;margin:0 auto 14px;line-height:1.65;">New buyers: <a href="#pricing" style="color:var(--or);font-weight:700;">Growth Kit ($697)</a> for core tools, or <a href="#pricing" style="color:var(--or);font-weight:700;">Ultimate ($1,397)</a> for branding + this guide in one checkout. <strong>No GHL?</strong> See optional <a href="#pricing" style="color:var(--or);font-weight:700;">Lite CRM ($97/mo)</a> below — you don’t need it if you already use GoHighLevel.</p>
+      <p style="font-size:.84rem;color:var(--faint);margin-top:0;">Funnel pages use the same Stripe links as this file · CMS guide updates re-delivered after each announcement</p>
     </div>
   </div>
 </section>
@@ -896,7 +905,29 @@ const PATHWAYS={
 <!-- PRICING -->
 <section class="pricing" id="pricing">
   <div class="wrap">
-    <div class="ctr"><div class="tag">Pricing</div><h2 class="sh">Simple. One-Time. Yours Forever.</h2><p class="ss ctr">Own the tools outright. Annual CMS rate updates free, forever.</p><p class="ss ctr" style="max-width:640px;margin-top:-8px;font-size:.95rem;color:var(--body);"><strong>This page:</strong> <strong>Growth Kit</strong> ($697) or <strong>Ultimate</strong> ($1,397) with Stripe. <strong>After $697,</strong> optional upsells: <strong>$197</strong> Branding → <strong>$397</strong> Guide — each its own funnel step. You import the GHL snapshot into your sub-account (video walkthrough included).</p></div>
+    <div id="offer-map" class="offer-map">
+      <h3>Offer map — prices, Stripe, &amp; GHL</h3>
+      <p class="om-sub"><strong>Two one-time checkouts:</strong> <strong>$697</strong> Growth Kit · <strong>$1,397</strong> Ultimate (branding + guide included). <strong>Lite CRM $97/mo</strong> — optional, <em>only if the buyer has no GHL account</em>; separate Stripe subscription. Checkout opens in a <strong>new tab</strong> so Stripe loads outside the GHL iframe.</p>
+      <div class="offer-map-grid">
+        <div class="om-block">
+          <h4>Stripe — after payment URLs (update both links)</h4>
+          <p class="om-flow"><strong>$697 Growth Kit</strong> → <code style="font-size:.78em;background:var(--bg);padding:2px 6px;border-radius:4px;">/thankyou</code> (or your intake URL)<br>
+          <strong>$1,397 Ultimate</strong> → <code style="font-size:.78em;background:var(--bg);padding:2px 6px;border-radius:4px;">/thankyou</code> (same page is fine; use GHL/Zapier tags to branch)<br>
+          <strong>Lite CRM $97/mo</strong> (optional, no-GHL buyers) → <code style="font-size:.78em;background:var(--bg);padding:2px 6px;border-radius:4px;">/thankyou</code> or Lite CRM onboarding</p>
+          <p style="margin-top:10px;font-size:.82rem;color:var(--mid);">Most customers use their own GHL — Lite CRM is not part of the core offer. Retire old redirects to <code>/branding</code> / <code>/guide</code> on the two main SKUs unless you still run that ladder. No <code>/dfy</code> step.</p>
+        </div>
+        <div class="om-block">
+          <h4>GHL — how we deliver</h4>
+          <ul>
+            <li><strong>Your own GHL:</strong> snapshot + written import; you control the location.</li>
+            <li><strong>Agency sub-account:</strong> calendar booking from post-purchase email; scoped <strong>User</strong> role (CRM, pipeline, calendar, conversations — not workflows, billing, or snapshots).</li>
+            <li><strong>No GHL account (optional):</strong> <strong>Lite CRM</strong> <strong>$97/mo</strong> — only for buyers who aren’t on GHL; email <a href="mailto:support@agentflowos.ai" style="color:var(--or);font-weight:700;">support@agentflowos.ai</a> or subscribe via the Payment Link once <code>STRIPE_LITE_CRM_97</code> is set in <code>mgk.html</code>.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="om-note">Operator playbook (tags, webhooks, permissions): print or host <strong>agentflowos-ghl-business-plan.html</strong> next to <code>mgk.html</code> on your CDN, or use <strong>agentflowos-ghl-setup-checklist.html</strong>. If this card still shows old dollar amounts on the public site, redeploy the latest <code>mgk.html</code> — live <code>/mgk-page</code> was behind source.</p>
+    </div>
+    <div class="ctr"><div class="tag">Pricing</div><h2 class="sh">Simple. One-Time. Yours Forever.</h2><p class="ss ctr">Own the tools outright. Annual CMS rate updates free, forever.</p><p class="ss ctr" style="max-width:680px;margin-top:-8px;font-size:.95rem;color:var(--body);"><strong>Choose your path:</strong> <strong>Growth Kit</strong> ($697) or <strong>Ultimate</strong> ($1,397) — two checkouts only on this offer. <strong>Your own GHL?</strong> Written import instructions. <strong>Agency sub-account?</strong> Book via the calendar in your post-purchase email — we work inside <em>your</em> agency’s GHL (scoped user access: CRM, pipeline, calendar, conversations — not workflows, billing, or snapshots). <strong>Already use GHL?</strong> You won’t need Lite CRM. <strong>No GHL account?</strong> Optional <strong>Lite CRM</strong> <strong>$97/mo</strong> below. <a class="afos-support-mail" href="mailto:support@agentflowos.ai" style="color:var(--or);font-weight:700;">support@agentflowos.ai</a></p></div>
     <div class="price-grid">
       <div class="pcard feat">
         <div class="pt">Medicare Growth Kit™</div><div class="pamt"><sup>$</sup>697</div><div class="pcad">one-time · instant delivery</div>
@@ -912,27 +943,27 @@ const PATHWAYS={
           <div class="pf no">25-page Medicare Guide PDF</div>
         </div>
         <a href="https://buy.stripe.com/3cIbJ1ea85xY1mC6fe6sw00" class="btn-buy bor afos-stripe-697">Get Growth Kit — $697 →</a>
-        <p style="font-size:.74rem;color:var(--faint);text-align:center;margin-top:9px;">⚡ Stripe checkout · Upsell steps after payment</p>
+        <p style="font-size:.74rem;color:var(--faint);text-align:center;margin-top:9px;">Stripe <strong>After payment</strong> → your thank-you / intake URL (e.g. <strong>/thankyou</strong>) — <em>not</em> the old /branding upsell path</p>
       </div>
       <div class="pcard brand">
-        <div class="pt">Branding Kit Add-On</div><div class="pamt"><sup>$</sup>197</div><div class="pcad">add-on · requires Growth Kit</div>
+        <div class="pt">Ultimate Bundle</div><div class="pamt"><sup>$</sup>1,397</div><div class="pcad">one-time · best value · everything included</div>
         <div class="pfeats">
-          <div class="pf"><strong>Everything in the Growth Kit</strong></div>
-          <div class="pf">Your brand color on all 6 tools</div>
-          <div class="pf">Your logo in every tool header</div>
-          <div class="pf">Your headshot in agent cards + reports</div>
-          <div class="pf">Facebook Pixel ID wired in everywhere</div>
-          <div class="pf">Re-delivered fully customized</div>
-          <div class="pf no">25-page Medicare Guide PDF</div>
+          <div class="pf"><strong>Everything in Growth Kit</strong> — all tools + snapshot</div>
+          <div class="pf">Full branding — color, logo, headshot, Facebook Pixel</div>
+          <div class="pf"><strong>25-page Medicare Guide</strong> PDF — branded</div>
+          <div class="pf">Video walkthrough included</div>
+          <div class="pf">Guided setup — written (your GHL) or calendar (sub-account)</div>
+          <div class="pf">Annual CMS updates — free forever</div>
         </div>
-        <p style="font-size:.82rem;color:var(--mid);text-align:center;line-height:1.55;margin:0;padding:14px 12px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);">First upsell after Growth Kit — <strong>$197</strong> on <strong>/branding</strong>.</p>
+        <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-buy bpu afos-stripe-ult">Get Ultimate — $1,397 →</a>
+        <p style="font-size:.74rem;color:var(--faint);text-align:center;margin-top:9px;">Stripe <strong>After payment</strong> → same thank-you / intake as Growth Kit (branch on tags in GHL/Zapier)</p>
       </div>
     </div>
     <div class="guide-add">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span style="font-size:1.3rem;">📘</span><div><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);">Add-On — Previewed In Full Above</div><div style="font-family:var(--fd);font-size:1.15rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;">25-Page White-Label Medicare Guide PDF</div></div></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span style="font-size:1.3rem;">📘</span><div><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);">25-Page Guide · Ultimate only</div><div style="font-family:var(--fd);font-size:1.15rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;">White-Label Medicare Guide PDF</div></div></div>
       <div class="guide-add-row">
         <div>
-          <p style="font-size:.9rem;color:var(--mid);line-height:1.7;margin-bottom:12px;">All 17 sections shown above, branded to your agency. Give it away at seminars, send after appointments, use as a lead magnet. Updated every November — <strong style="color:var(--ink);">free forever.</strong></p>
+          <p style="font-size:.9rem;color:var(--mid);line-height:1.7;margin-bottom:12px;">All 17 sections are included with <strong>Ultimate ($1,397)</strong> — branded to your agency. Give it away at seminars, send after appointments, use as a lead magnet. Updated every November — <strong style="color:var(--ink);">free forever.</strong></p>
           <div class="gf-grid">
             <div class="gf">Medicare Parts A, B, C, D — complete</div>
             <div class="gf">IRMAA — all filing statuses + SSA-44</div>
@@ -945,39 +976,21 @@ const PATHWAYS={
           </div>
         </div>
         <div class="guide-price-box">
-          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:4px;">Add-On Price</div>
-          <div style="font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--ink);letter-spacing:-.04em;line-height:1;margin-bottom:2px;"><sup style="font-size:.85rem;vertical-align:super;">$</sup>397</div>
-          <div style="font-size:.76rem;color:var(--mid);margin-bottom:13px;">one-time · free updates forever</div>
-          <p style="font-size:.78rem;color:var(--mid);line-height:1.5;margin:0;padding:12px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);text-align:center;">Last upsell — <strong>$397</strong> Guide on <strong>/guide</strong> after Branding.</p>
-          <p style="font-size:.69rem;color:var(--faint);margin-top:8px;">Not sold from this landing page</p>
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--warn);margin-bottom:4px;">Get the guide</div>
+          <div style="font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--ink);letter-spacing:-.04em;line-height:1;margin-bottom:2px;"><sup style="font-size:.85rem;vertical-align:super;">$</sup>1,397</div>
+          <div style="font-size:.76rem;color:var(--mid);margin-bottom:13px;">Ultimate · one checkout</div>
+          <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-hero afos-stripe-ult" style="display:block;text-align:center;padding:12px 16px;font-size:.92rem;margin-bottom:10px;">Ultimate — includes guide →</a>
+          <p style="font-size:.78rem;color:var(--mid);line-height:1.5;margin:0;padding:10px 12px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);text-align:center;">Growth Kit does not include the PDF — upgrade via Ultimate or email <a class="afos-support-mail" href="mailto:support@agentflowos.ai" style="color:var(--or);font-weight:700;">support</a>.</p>
         </div>
       </div>
     </div>
-    <!-- ULTIMATE BUNDLE -->
-    <div class="bundle">
-      <div class="bundle-in">
-        <div>
-          <div class="bundle-pill">⭐ Most Complete · Best Value</div>
-          <div class="bundle-t">Ultimate Bundle — Everything</div>
-          <div class="bundle-s">Every tool, your branding, and the 25-page guide in one checkout. Import the snapshot into your GHL sub-account (same self-serve path as Growth Kit — video included). Optional welcome call after purchase.</div>
-          <div class="bundle-feats">
-            <div class="bf"><strong>All 6 tools</strong> — Dark &amp; Light</div>
-            <div class="bf"><strong>GHL Snapshot</strong> — full automation</div>
-            <div class="bf"><strong>Branding Kit</strong> — color, logo, pixel</div>
-            <div class="bf"><strong>25-Page Medicare Guide</strong> PDF</div>
-            <div class="bf"><strong>Optional welcome call</strong> — walkthrough of what you received</div>
-            <div class="bf"><strong>Annual CMS updates</strong> — free, forever</div>
-          </div>
-          <div class="bundle-sav"><span>One checkout · Skip the upsell funnel</span></div>
-        </div>
-        <div class="bprice-side">
-          <div class="bpl">Complete Package</div>
-          <div class="bp"><sup>$</sup>1,397</div>
-          <div class="bpc">one-time · everything included</div>
-          <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-ult afos-stripe-ult">Get the Ultimate Bundle →</a>
-          <p style="font-size:.69rem;color:rgba(255,255,255,.38);margin-top:9px;line-height:1.5;">Instant delivery · No contracts</p>
-        </div>
-      </div>
+    <div style="max-width:680px;margin:28px auto 0;padding:20px 22px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--mid);margin-bottom:10px;text-align:center;">No GHL account? Lite CRM (optional)</div>
+      <p style="font-size:.95rem;color:var(--body);line-height:1.65;margin:0;text-align:center;"><strong>Not required.</strong> Most buyers use their own GoHighLevel. If you <strong>don’t</strong> have GHL, <strong>AgentFlowOS Lite CRM</strong> (<strong>$97/mo</strong>) is an optional hosted path for follow-up — <strong>not included</strong> in the one-time kit or Ultimate. Paste your Stripe subscription Payment Link into <code style="font-size:.85em;">STRIPE_LITE_CRM_97</code> in this file, then use the button below — or <a href="mailto:support@agentflowos.ai" style="color:var(--or);font-weight:700;">email support@agentflowos.ai →</a></p>
+      <p style="text-align:center;margin-top:16px;">
+        <a href="mailto:support@agentflowos.ai?subject=Lite%20CRM%20%2497%2Fmo%20%28no%20GHL%29" class="btn-hero afos-stripe-lite-crm" style="display:inline-flex;padding:14px 24px;font-size:.95rem;">Lite CRM — $97/mo (no GHL only)</a>
+      </p>
+      <p style="font-size:.8rem;color:var(--faint);margin:12px 0 0;line-height:1.55;text-align:center;"><strong>Have GHL?</strong> You don’t need this. <strong>Billing:</strong> recurring subscription in Stripe. <strong>After payment</strong> → thank-you or onboarding URL on that Payment Link.</p>
     </div>
   </div>
 </section>
@@ -997,13 +1010,16 @@ const PATHWAYS={
 <section class="faq-sec">
   <div class="wrap-sm">
     <div class="ctr" style="margin-bottom:28px;"><div class="tag blue">FAQ</div><h2 class="sh">Questions</h2></div>
-    <details><summary>Do I need to know how to code?</summary><div class="faq-a">No. Each tool is a self-contained HTML file. In GHL, drag a "Custom HTML" block onto your page and paste the file contents in. A video walkthrough is included with every purchase.</div></details>
-    <details><summary>Do I need GoHighLevel?</summary><div class="faq-a">GHL is strongly recommended — the snapshot installs your entire automation system in 2 clicks. The HTML tools will embed on any website, but without GHL you'll manage follow-up manually.</div></details>
+    <details><summary>Do I need to know how to code?</summary><div class="faq-a">No. You get ready-to-use HTML files and a GHL snapshot. Many agents paste a one-time iframe in GHL that loads the hosted page (updates automatically when we deploy). A video walkthrough is included with every purchase.</div></details>
+    <details><summary>What’s the difference between Growth Kit ($697) and Ultimate ($1,397)?</summary><div class="faq-a">Growth Kit delivers all three lead tools and the GHL snapshot with your agency name, phone, and booking link in a clean default look. Ultimate adds full branding (your color, logo, headshot, Facebook Pixel) and the 25-page Medicare Guide PDF — everything in one checkout.</div></details>
+    <details><summary>Do I need GoHighLevel?</summary><div class="faq-a">Yes — <strong>GoHighLevel is how the system is designed to run</strong>: the snapshot installs your automation in 2 clicks. The HTML tools can embed on any site, but follow-up is built for GHL. <strong>Lite CRM ($97/mo)</strong> is <strong>optional</strong> and only there if you <strong>don’t</strong> have a GHL account; it’s not required to buy the Growth Kit or Ultimate. Email <a class="afos-support-mail" href="mailto:support@agentflowos.ai" style="color:var(--or);">support@agentflowos.ai</a> if you’re unsure which path fits.</div></details>
     <details><summary>How does the GHL snapshot work? Do I need a webhook URL?</summary><div class="faq-a">No. The snapshot creates the inbound webhook automatically when you import it. All custom fields, tags, pipelines, and workflows are created in your GHL account the moment you import.</div></details>
+    <details><summary>After I buy, how do I get help installing in GHL?</summary><div class="faq-a">Every customer gets support. If you have <strong>your own GoHighLevel account</strong>, you’ll get <strong>written, step-by-step import instructions</strong> with your delivery. If you’re on an <strong>agency sub-account</strong>, use the <strong>calendar link in your post-purchase email</strong> to book a setup time — we work inside your agency’s GHL. Your agency can invite us as a <strong>User</strong> with scoped permissions (e.g. contacts, conversations, calendars, pipeline, calls, reports — and <strong>no</strong> access to workflows, funnels/sites, settings, integrations, snapshots, billing, or team management) so your stack stays protected. <a class="afos-schedule" href="#" style="color:var(--or);font-weight:600;" hidden>You can also book here.</a> Questions: <a class="afos-support-mail" href="mailto:support@agentflowos.ai" style="color:var(--or);">support@agentflowos.ai</a>.</div></details>
     <details><summary>Are annual CMS rate updates really free forever?</summary><div class="faq-a">Yes. The HTML tools point to a hosted JSON config file we update each November. The next time any prospect opens your tool, it fetches the updated rates overnight — zero file changes on your end, ever. For the PDF guide, we regenerate and re-deliver within 48 hours of the CMS announcement.</div></details>
-    <details><summary>What's the difference between Generic and Branded?</summary><div class="faq-a">The $697 Growth Kit includes generic versions with your agency name, phone, and booking link in a standard blue scheme. The $197 Branding Kit re-delivers all tools with your exact brand color, logo, headshot, and Facebook Pixel ID. Branded tools look like custom-built software — not a template.</div></details>
+    <details><summary>What’s included in Ultimate?</summary><div class="faq-a">Ultimate ($1,397) includes everything in Growth Kit plus full branding and the 25-page guide in one Stripe checkout — no separate upsell steps.</div></details>
     <details><summary>Can I use these in all my licensed states?</summary><div class="faq-a">Yes. No per-state restrictions. One purchase covers your entire book of business.</div></details>
-    <details><summary>Questions before buying?</summary><div class="faq-a">Email <a href="mailto:hello@agentflowos.com" style="color:var(--or);">us here</a>. Responses within 1 business day.</div></details>
+    <details><summary>Where’s the full business / GHL operations map?</summary><div class="faq-a">See <strong>How it works</strong> and the offer map above for prices, Stripe redirects, and delivery paths. For checklists and internal SOPs, use <strong>agentflowos-ghl-business-plan.html</strong> and <strong>agentflowos-ghl-setup-checklist.html</strong> in your repo (host beside <code>mgk.html</code> or print to PDF).</div></details>
+    <details><summary>Questions before buying?</summary><div class="faq-a">Email <a class="afos-support-mail" href="mailto:support@agentflowos.ai" style="color:var(--or);">support@agentflowos.ai</a> — we typically reply within one business day.</div></details>
   </div>
 </section>
 
@@ -1014,13 +1030,13 @@ const PATHWAYS={
       <div class="fc-glow"></div>
       <img src="https://assets.cdn.filesafe.space/aalZz3JfkmBWlXlpqvSa/media/69d0fe47849c507b529c66fc.png" alt="AgentFlowOS" onerror="this.style.display='none'">
       <div class="fc-t">The Complete Medicare<br>Growth System</div>
-      <div class="fc-s">Every tool, your branding, and the guide. Import into GHL and go live on your timeline — optional welcome call with Ultimate.</div>
+      <div class="fc-s">Every tool, your branding, and the guide — pick Growth Kit ($697) or Ultimate ($1,397). Import with written steps (your GHL) or book setup (sub-account). <a class="afos-support-mail" href="mailto:support@agentflowos.ai" style="color:rgba(253,186,116,.95);">support@agentflowos.ai</a></div>
       <div class="fc-ctas">
         <div class="hero-ctas-dual" style="margin-bottom:8px;">
           <a href="https://buy.stripe.com/3cIbJ1ea85xY1mC6fe6sw00" class="btn-hero afos-stripe-697">Growth Kit — $697<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
           <a href="https://buy.stripe.com/8x28wP9TS5xY8P49rq6sw04" class="btn-hero btn-hero-ghost afos-stripe-ult" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.55);box-shadow:none;">Ultimate — $1,397<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div>
-        <p style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.35);max-width:440px;margin:0 auto;line-height:1.5;">After $697: $197 Branding → $397 Guide — each with its own Stripe link.</p>
+        <p style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.35);max-width:440px;margin:0 auto;line-height:1.5;">Stripe <strong>After payment</strong> for $697 and $1,397 should go to your thank-you / intake page — update both Payment Links; retire old /branding funnel redirects unless you still use them.</p>
         <span style="font-size:.82rem;color:rgba(255,255,255,.28);">Annual CMS updates free forever · No contracts</span>
       </div>
     </div>
@@ -1152,19 +1168,29 @@ function afosBindUI(){
       else if(act==='reset')playerReset();
       return;
     }
-    var stA=ev.target.closest('a.afos-stripe-697, a.afos-stripe-ult');
+    var stA=ev.target.closest("a.afos-stripe-697,a.afos-stripe-ult,a.afos-stripe-lite-crm");
     if(stA){
-      try{sessionStorage.setItem('afos_last_checkout_tier',stA.classList.contains('afos-stripe-ult')?'ultimate':'697');}catch(e){}
+      var tk="ultimate";
+      if(stA.classList.contains("afos-stripe-697"))tk="697";
+      else if(stA.classList.contains("afos-stripe-lite-crm"))tk="litecrm";
+      try{sessionStorage.setItem("afos_last_checkout_tier",tk);}catch(e){}
     }
   });
 }
 
-/* ── BUY: only 697 + ultimate on this page ── */
+/** Optional: open checkout — buy(697), buy("ultimate"), buy("litecrm") */
 function buy(tier){
-  const url=tier==="ultimate"?LINKS.stripeUltimate:LINKS.stripe697;
-  if(!url||String(url).indexOf("YOUR_")!==-1){alert("Set STRIPE_GROWTH_KIT_697 and STRIPE_ULTIMATE_1397 at the top of this file.");return;}
-  try{sessionStorage.setItem("afos_last_checkout_tier",tier);}catch(e){}
-  window.location.assign(url);
+  var t=String(tier);
+  var map={697:LINKS.stripe697,ultimate:LINKS.stripeUltimate,litecrm:LINKS.stripeLiteCrm};
+  var url=map[t];
+  if(!url||String(url).indexOf("YOUR_")!==-1){
+    alert("Set the STRIPE_* constants at the top of this file for this tier.");
+    return;
+  }
+  try{sessionStorage.setItem("afos_last_checkout_tier",t==="ultimate"?"ultimate":t);}catch(e){}
+  /* New tab: Stripe Checkout often stays on skeleton if loaded inside a GHL/funnel iframe */
+  var w=window.open(url,"_blank","noopener,noreferrer");
+  if(!w)window.top.location.assign(url);
 }
 
 function afosStripeReturnInit(){
@@ -1176,7 +1202,50 @@ function afosStripeReturnInit(){
   if(x)x.addEventListener("click",function(){el.setAttribute("hidden","");});
 }
 
+/** Wires all checkout anchors — edit STRIPE_* constants only */
+function afosWireStripeCheckoutLinks(){
+  if(!LINKS)return;
+  var pairs=[
+    ["a.afos-stripe-697",LINKS.stripe697],
+    ["a.afos-stripe-ult",LINKS.stripeUltimate],
+    ["a.afos-stripe-lite-crm",LINKS.stripeLiteCrm]
+  ];
+  pairs.forEach(function(p){
+    var u=p[1];
+    if(!u||String(u).indexOf("YOUR_")!==-1)return;
+    document.querySelectorAll(p[0]).forEach(function(a){
+      a.setAttribute("href",u);
+      a.setAttribute("target","_blank");
+      a.setAttribute("rel","noopener noreferrer");
+    });
+  });
+}
+
+/** support@ — edit LINKS.supportEmail only */
+function afosWireSupportMail(){
+  var em=LINKS&&LINKS.supportEmail;
+  if(!em)return;
+  document.querySelectorAll("a.afos-support-mail").forEach(function(a){
+    a.setAttribute("href","mailto:"+em);
+    a.textContent=em;
+  });
+}
+
+/** Sub-account calendar — LINKS.scheduleSetupUrl (GHL book widget or Calendly, etc.) */
+function afosWireSchedule(){
+  var u=LINKS&&LINKS.scheduleSetupUrl;
+  var ok=u&&/^https?:\/\//i.test(String(u));
+  document.querySelectorAll(".afos-schedule-fallback").forEach(function(el){el.style.display=ok?"none":"";});
+  document.querySelectorAll("a.afos-schedule").forEach(function(a){
+    if(ok){a.setAttribute("href",u);a.removeAttribute("hidden");}
+    else{a.setAttribute("hidden","");}
+  });
+}
+
 document.addEventListener("DOMContentLoaded",function(){
+  afosWireSchedule();
+  afosWireSupportMail();
+  afosWireStripeCheckoutLinks();
   afosBindUI();
   selPW(0);
   afosStripeReturnInit();
